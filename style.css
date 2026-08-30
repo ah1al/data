@@ -1018,3 +1018,61 @@ main.container {
     font-size: 13px;
   }
 }
+
+/* شاشات الجوال والتبلت الصغير: جدول الرواتب بطاقات مكدّسة مضغوطة (لا يمتد عالياً) */
+@media (max-width: 640px) {
+  .salary-box .excel-wrap {
+    overflow: visible;
+  }
+  .excel-table,
+  .excel-table tbody,
+  .excel-table tr,
+  .excel-table td,
+  .excel-table th {
+    display: block;
+    width: 100%;
+  }
+  .excel-table thead {
+    display: none;
+  }
+  .excel-table tbody tr {
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-sm);
+    margin-bottom: 10px;
+    padding: 10px 14px;
+  }
+  .excel-table tbody tr:last-child {
+    margin-bottom: 0;
+  }
+  .excel-table td {
+    border: none;
+    padding: 3px 0;
+  }
+  .excel-table .xl-name {
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .excel-table .xl-day {
+    display: inline-block;
+    text-align: right;
+    margin-left: 10px;
+  }
+  .excel-table .xl-count {
+    display: inline-block;
+    margin-top: 0;
+  }
+
+  /* منع أي تمدد عرضي على الجوال */
+  .salary-box,
+  .salary-box .excel-wrap,
+  .excel-table,
+  .excel-table td {
+    max-width: 100%;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+  .excel-table .xl-date-val,
+  .excel-table .xl-count {
+    white-space: normal;
+  }
+}
