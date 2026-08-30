@@ -239,11 +239,6 @@ main.container {
   .top-sections {
     grid-template-columns: 1fr;
   }
-
-  /* الجوال/التابلت: زر اللغة بأيقونة فقط (بدون EN/AR) */
-  .lang-label {
-    display: none;
-  }
 }
 
 .section {
@@ -1082,8 +1077,7 @@ main.container {
     font-size: 16px;
   }
 
-  .theme-label,
-  .lang-label {
+  .theme-label {
     display: none;
   }
 
