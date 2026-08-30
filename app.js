@@ -286,6 +286,12 @@
     return p2(obj.day) + '-' + p2(obj.month) + '-' + obj.year + ' - ' + monthsArr[obj.month - 1];
   }
 
+  // صيغة رقمية فقط (بلا اسم الشهر): 12-12-2022
+  function fmtNumOnly(obj) {
+    const p2 = (n) => String(n).padStart(2, '0');
+    return p2(obj.day) + '-' + p2(obj.month) + '-' + obj.year;
+  }
+
   /* ==========================================================
      قسم 1: التاريخ الحالي
      ========================================================== */
@@ -788,8 +794,8 @@
         '<td class="xl-name"><span class="xl-name-t">' + item.name + '</span></td>' +
         '<td class="xl-day">' + weekdayOf(g) + '</td>' +
         '<td class="xl-date">' +
-          '<span class="xl-date-val" data-mode="gregorian">' + fmtNumDate(g, GREGORIAN_MONTHS) + '</span>' +
-          (h ? '<span class="xl-date-val" data-mode="hijri">' + fmtNumDate(h, HIJRI_MONTHS) + '</span>' : '') +
+          '<span class="xl-date-val" data-mode="gregorian">' + fmtNumOnly(g) + '</span>' +
+          (h ? '<span class="xl-date-val" data-mode="hijri">' + fmtNumOnly(h) + '</span>' : '') +
         '</td>' +
         '<td class="xl-count" data-count> ' + countdownText(target) + '</td>';
 
