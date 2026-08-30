@@ -1011,4 +1011,44 @@ main.container {
     justify-content: center;
     margin-top: 10px;
   }
+
+  /* جدول الرواتب → بطاقات مكدّسة أنيقة على الجوال */
+  .salary-box .excel-wrap {
+    overflow: visible;
+  }
+  .excel-table,
+  .excel-table tbody,
+  .excel-table tr,
+  .excel-table td {
+    display: block;
+    width: 100%;
+  }
+  .excel-table thead {
+    display: none;
+  }
+  .excel-table tbody tr {
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-sm);
+    margin-bottom: 12px;
+    padding: 12px 14px;
+  }
+  .excel-table tbody tr:last-child {
+    margin-bottom: 0;
+  }
+  .excel-table td {
+    border: none;
+    padding: 5px 0;
+  }
+  .excel-table .xl-name-t {
+    font-size: 15px;
+  }
+  .excel-table .xl-day {
+    text-align: right;
+  }
+  .excel-table .xl-date {
+    margin-top: 2px;
+  }
+  .excel-table .xl-count {
+    margin-top: 4px;
+  }
 }
