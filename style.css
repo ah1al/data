@@ -875,7 +875,7 @@ main.container {
   padding: 20px;
 }
 
-/* ---- جدول الرواتب (شبيه Excel) ---- */
+/* ---- جدول مواعيد الرواتب ---- */
 .salary-box .seg {
   margin-bottom: 14px;
 }
@@ -884,6 +884,7 @@ main.container {
   overflow-x: auto;
   border: 1px solid var(--card-border);
   border-radius: var(--radius-sm);
+  background: var(--card);
 }
 
 .excel-table {
@@ -891,7 +892,6 @@ main.container {
   border-collapse: collapse;
   font-size: 13.5px;
   text-align: right;
-  background: var(--card);
 }
 
 .excel-table thead th {
@@ -901,19 +901,8 @@ main.container {
   font-weight: 800;
   font-size: 13px;
   padding: 11px 14px;
+  white-space: nowrap;
 }
-
-.excel-table,
-.excel-table tbody,
-.excel-table tr,
-.excel-table td,
-.excel-table th {
-  display: table;
-}
-.excel-table tbody { display: table-row-group; }
-.excel-table tr { display: table-row; }
-.excel-table td,
-.excel-table th { display: table-cell; }
 
 .excel-table tbody tr {
   border-bottom: 1px solid var(--card-border);
@@ -935,32 +924,23 @@ main.container {
 
 .excel-table .xl-name {
   font-family: var(--font-head);
-}
-
-.excel-table .xl-name-t {
-  display: block;
   font-weight: 700;
 }
 
 .excel-table .xl-day {
-  font-family: var(--font-main);
-  font-weight: 600;
   color: var(--text-muted);
   font-size: 12px;
-  text-align: center;
   white-space: nowrap;
 }
 
 .excel-table .xl-date {
   font-weight: 600;
   font-size: 13px;
-}
-
-.excel-table .xl-date-val {
-  display: block;
+  white-space: nowrap;
 }
 
 .excel-table .xl-date-val[data-mode="hijri"] {
+  display: block;
   font-size: 12px;
   color: var(--text-muted);
   margin-top: 2px;
@@ -1022,27 +1002,5 @@ main.container {
     width: 100%;
     justify-content: center;
     margin-top: 10px;
-  }
-
-  /* جدول الرواتب على الجوال: يبقى أعمدة (شكل Excel) مع تمرير أفقي سلس */
-  .salary-box .excel-wrap {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    max-width: 100%;
-  }
-  .excel-table {
-    width: max-content;
-    min-width: 100%;
-  }
-  .excel-table th,
-  .excel-table td {
-    padding: 8px 10px;
-  }
-  .excel-table .xl-name-t {
-    font-size: 13px;
-  }
-  .excel-table .xl-day,
-  .excel-table .xl-count {
-    white-space: nowrap;
   }
 }

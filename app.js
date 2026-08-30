@@ -779,7 +779,7 @@
     return target;
   }
 
-  // يعرض مواعيد الرواتب كجدول (الجهة / اليوم / التاريخ / متبقي)
+  // يعرض مواعيد الرواتب كجدول (الجهة / اليوم / تاريخ الصرف / متبقي)
   function renderSalaryCards() {
     const tbody = $('salaryGrid');
     if (!tbody) return;
@@ -791,7 +791,7 @@
 
       const tr = document.createElement('tr');
       tr.innerHTML =
-        '<td class="xl-name"><span class="xl-name-t">' + item.name + '</span></td>' +
+        '<td class="xl-name">' + item.name + '</td>' +
         '<td class="xl-day">' + weekdayOf(g) + '</td>' +
         '<td class="xl-date">' +
           '<span class="xl-date-val" data-mode="gregorian">' + fmtNumOnly(g) + '</span>' +
@@ -807,7 +807,7 @@
       }, 1000);
     });
 
-    // بعد البناء طبق تبويب اليوم
+    // بعد البناء طبق التبويب الحالي
     applySalaryMode();
   }
 
@@ -819,7 +819,7 @@
     return active ? active.dataset.cal : 'hijri';
   }
 
-  // يطبّق التبويب على كل تاريخ في الجدول
+  // يطبّق التبويب على أعمدة تاريخ الصرف في الجدول
   function applySalaryMode() {
     const mode = getSalaryCalendar();
     document.querySelectorAll('.xl-date-val').forEach((el) => {
@@ -827,7 +827,7 @@
     });
   }
 
-  // ربط أزرار تبويب التقويم في جدول الرواتب
+  // ربط أزرار تبويب التقويم في مواعيد الرواتب
   const salaryCalEl = $('salaryCalendar');
   if (salaryCalEl) {
     salaryCalEl.querySelectorAll('.seg-btn').forEach((btn) => {
