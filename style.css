@@ -1012,43 +1012,23 @@ main.container {
     margin-top: 10px;
   }
 
-  /* جدول الرواتب → بطاقات مكدّسة أنيقة على الجوال */
+  /* جدول الرواتب على الجوال: يبقى أعمدة (شكل Excel) مع تمرير أفقي سلس */
   .salary-box .excel-wrap {
-    overflow: visible;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
-  .excel-table,
-  .excel-table tbody,
-  .excel-table tr,
+  .excel-table {
+    min-width: 560px;
+  }
+  .excel-table th,
   .excel-table td {
-    display: block;
-    width: 100%;
-  }
-  .excel-table thead {
-    display: none;
-  }
-  .excel-table tbody tr {
-    border: 1px solid var(--card-border);
-    border-radius: var(--radius-sm);
-    margin-bottom: 12px;
-    padding: 12px 14px;
-  }
-  .excel-table tbody tr:last-child {
-    margin-bottom: 0;
-  }
-  .excel-table td {
-    border: none;
-    padding: 5px 0;
+    padding: 8px 10px;
   }
   .excel-table .xl-name-t {
-    font-size: 15px;
+    font-size: 13px;
   }
-  .excel-table .xl-day {
-    text-align: right;
-  }
-  .excel-table .xl-date {
-    margin-top: 2px;
-  }
+  .excel-table .xl-day,
   .excel-table .xl-count {
-    margin-top: 4px;
+    white-space: nowrap;
   }
 }
