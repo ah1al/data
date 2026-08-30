@@ -186,6 +186,24 @@
 
   const $ = (id) => document.getElementById(id);
 
+  /* نافذة تنبيه مدمجة بديلة عن alert()
+     — مريحة جداً على الجوال ولا تفتح نافذة المتصفح */
+  let toastTimer = null;
+  function notify(message, isError) {
+    const toast = $('toast');
+    if (!toast) { alert(message); return; }
+    // إعادة ضبط المهلة السابقة
+    if (toastTimer) clearTimeout(toastTimer);
+    toast.textContent = message;
+    toast.classList.toggle('toast-error', !!isError);
+    toast.classList.add('toast-show');
+    toast.hidden = false;
+    toastTimer = setTimeout(() => {
+      toast.classList.remove('toast-show');
+      toast.hidden = true;
+    }, 3600);
+  }
+
   function populateMonths(selectEl, arr) {
     // إعادة بناء قائمة الشهور بشكل نظيف (تراكيب متوافقة مع كل المتصفحات)
     let html = '';
@@ -424,20 +442,20 @@
     if (from === 'hijri') {
       if (!isUqDateValid(y, m, d)) {
         const ml = uqMonthLength(y, m);
-        alert(ml === null
+        notify(ml === null
           ? 'السنة الهجرية خارج نطاق أم القرى (' + UQ_START_YEAR + ' – ' + UQ_MAX_YEAR + ')'
           : 'اليوم غير صحيح لهذا الشهر الهجري (الأيام: ' + ml + ')');
         return;
       }
       inputG = hijriToGregorian(y, m, d);
     } else {
-      if (!isValidGregorian(y, m, d)) { alert('تاريخ ميلادي غير صحيح.'); return; }
+      if (!isValidGregorian(y, m, d)) { notify('تاريخ ميلادي غير صحيح.'); return; }
       inputG = { year: y, month: m, day: d };
     }
 
     if (to === 'hijri') {
       const h = gregorianToHijri(inputG.year, inputG.month, inputG.day);
-      if (!h) { alert('التاريخ خارج نطاق تقويم أم القرى المدعوم.'); return; }
+      if (!h) { notify('التاريخ خارج نطاق تقويم أم القرى المدعوم.'); return; }
       fillDatePanel('h2gOutOutputText', 'h2gOutOutputName', h, HIJRI_MONTHS, 'هـ');
     } else {
       fillDatePanel('h2gOutOutputText', 'h2gOutOutputName', inputG, GREGORIAN_MONTHS, 'م');
@@ -556,12 +574,12 @@
 
     let birthJDN;
     if (cal === 'gregorian') {
-      if (!isValidGregorian(y, m, d)) { alert('تاريخ ميلاد غير صحيح.'); return; }
+      if (!isValidGregorian(y, m, d)) { notify('تاريخ ميلاد غير صحيح.'); return; }
       birthJDN = gregorianToJDN(y, m, d);
     } else {
       if (!isUqDateValid(y, m, d)) {
         const ml = uqMonthLength(y, m);
-        alert(ml === null ? 'السنة الهجرية خارج النطاق المدعوم' : 'يوم غير صحيح للشهر الهجري (الأيام: ' + ml + ')');
+        notify(ml === null ? 'السنة الهجرية خارج النطاق المدعوم' : 'يوم غير صحيح للشهر الهجري (الأيام: ' + ml + ')');
         return;
       }
       const g = hijriToGregorian(y, m, d);
@@ -570,7 +588,7 @@
 
     const now = new Date();
     const nowJDN = gregorianToJDN(now.getFullYear(), now.getMonth() + 1, now.getDate());
-    if (birthJDN > nowJDN) { alert('تاريخ الميلاد في المستقبل!'); return; }
+    if (birthJDN > nowJDN) { notify('تاريخ الميلاد في المستقبل!'); return; }
 
     const res = diffInUnits(birthJDN, nowJDN);
 
@@ -613,9 +631,9 @@
     const y2 = parseInt($('diffYear2').value, 10);
 
     const r1 = dateToJDN(cal, d1, m1, y1);
-    if (!r1.ok) { alert('التاريخ الأول: ' + r1.msg); return; }
+    if (!r1.ok) { notify('التاريخ الأول: ' + r1.msg); return; }
     const r2 = dateToJDN(cal, d2, m2, y2);
-    if (!r2.ok) { alert('التاريخ الثاني: ' + r2.msg); return; }
+    if (!r2.ok) { notify('التاريخ الثاني: ' + r2.msg); return; }
 
     const fromJDN = Math.min(r1.jdn, r2.jdn);
     const toJDN = Math.max(r1.jdn, r2.jdn);
@@ -711,7 +729,7 @@
     if (cal === 'hijri') {
       if (!isUqDateValid(y, m, d)) {
         const ml = uqMonthLength(y, m);
-        alert(ml === null
+        notify(ml === null
           ? 'السنة الهجرية خارج نطاق أم القرى (' + UQ_START_YEAR + ' – ' + UQ_MAX_YEAR + ')'
           : 'اليوم غير صحيح لهذا الشهر الهجري (الأيام: ' + ml + ')');
         return;
@@ -719,7 +737,7 @@
       const g = hijriToGregorian(y, m, d);
       baseJDN = gregorianToJDN(g.year, g.month, g.day);
     } else {
-      if (!isValidGregorian(y, m, d)) { alert('تاريخ ميلادي غير صحيح.'); return; }
+      if (!isValidGregorian(y, m, d)) { notify('تاريخ ميلادي غير صحيح.'); return; }
       baseJDN = gregorianToJDN(y, m, d);
     }
 
@@ -732,7 +750,7 @@
     if (cal === 'hijri') {
       const hResult = gregorianToHijri(resultG.year, resultG.month, resultG.day);
       const hBase = gregorianToHijri(baseG.year, baseG.month, baseG.day);
-      if (!hResult || !hBase) { alert('النتيجة خارج نطاق تقويم أم القرى المدعوم.'); return; }
+      if (!hResult || !hBase) { notify('النتيجة خارج نطاق تقويم أم القرى المدعوم.'); return; }
       $('addOutResultText').innerHTML = padDay(hResult.day) + '-' + padDay(hResult.month) + '-' + hResult.year +
         ' <span class="unit">هـ</span>';
       $('addOutResultName').textContent = HIJRI_MONTHS[hResult.month - 1] + ' ' + hResult.month;
