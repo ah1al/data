@@ -239,6 +239,11 @@ main.container {
   .top-sections {
     grid-template-columns: 1fr;
   }
+
+  /* الجوال/التابلت: زر اللغة بأيقونة فقط (بدون EN/AR) */
+  .lang-label {
+    display: none;
+  }
 }
 
 .section {
@@ -983,8 +988,9 @@ main.container {
 
 .excel-table .xl-date-val[data-mode="hijri"] {
   display: block;
-  font-size: 12px;
-  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 13px;
+  color: inherit;
   margin-top: 2px;
 }
 
