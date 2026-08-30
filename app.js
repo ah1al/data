@@ -11,20 +11,220 @@
      المرجع: الجدول الرسمي لأم القرى (1356هـ – 1500هـ)
      ========================================================== */
 
-  const HIJRI_MONTHS = [
-    'محرم', 'صفر', 'ربيع الأول', 'ربيع الثاني',
-    'جمادى الأولى', 'جمادى الآخرة', 'رجب', 'شعبان',
-    'رمضان', 'شوال', 'ذو القعدة', 'ذو الحجة'
-  ];
+  /* ==========================================================
+     التعدد اللغوي (عربي / English)
+     ========================================================== */
 
-  const GREGORIAN_MONTHS = [
-    'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
-    'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
-  ];
+  const LANG_STORAGE = 'calendar-lang';
+  let curLang = 'ar';
 
-  const WEEKDAYS = [
-    'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'
-  ];
+  // قواميس النصوص (الواجهة الثابتة + الرسائل الديناميكية)
+  const I18N = {
+    ar: {
+      pageTitle: 'التقويم الاحترافي — هجري وميلادي',
+      metaDesc: 'صفحة التواريخ والتقويم الاحترافية — التاريخ الهجري والميلادي، تحويل التواريخ (أم القرى)، حساب العمر، فارق التواريخ، ومواعيد الرواتب من المصادر الرسمية۔',
+      brandName: 'التقويم الاحترافي',
+      brandTag: 'هجري · ميلادي · أم القرى',
+      nightMode: 'الوضع الليلي',
+      dayMode: 'الوضع النهاري',
+      langToggleTitle: 'English',
+      salaryTitle: 'مواعيد نزول الرواتب',
+      salaryNote: 'دعم / رواتب ومساعدات — المواعيد أدناه هي القاعدة الرسمية العامة لكل جهة۔',
+      salaryHead: '⚡ مواعيد الرواتب',
+      hijri: 'هجري',
+      gregorian: 'ميلادي',
+      thEntity: 'الجهة',
+      thDay: 'اليوم',
+      thDate: 'تاريخ الصرف',
+      thRemaining: 'متبقي',
+      toolsTitle: 'أدوات التواريخ',
+      tabConvert: 'تحويل تاريخ',
+      tabAge: 'حساب عمر',
+      tabAddDays: 'حساب أيام',
+      tabDiff: 'حساب فترة',
+      fldDay: 'اليوم',
+      fldMonth: 'الشهر',
+      fldYear: 'السنة',
+      btnConvert: 'تحويل',
+      resultTitle: 'نتيجة التحويل',
+      btnCalcAge: 'حساب العمر',
+      unitYear: 'سنة',
+      unitMonth: 'شهر',
+      unitDay: 'يوم',
+      diffCalLabel: 'نوع التقويم للتاريخين',
+      diffDate1: 'التاريخ الأول (من)',
+      diffDate2: 'التاريخ الثاني (إلى)',
+      btnCalcDiff: 'حساب الفرق',
+      unitWeek: 'أسبوع',
+      fldOperation: 'العملية',
+      opAdd: 'إضافة (بعد)',
+      opSub: 'خصم (قبل)',
+      fldDayCount: 'عدد الأيام',
+      btnCalc: 'حساب',
+      resultLabel: 'النتيجة',
+      monthsTitle: 'أشهر السنة',
+      gregorianDate: 'التاريخ الميلادي',
+      hijriDate: 'التاريخ الهجري',
+      bannerHint: '✨ الشهر المميّز أدناه هو شهر اليوم الحالي',
+      hijriMonths: '🌙 الأشهر الهجرية',
+      gregorianMonths: '☀️ الأشهر الميلادية',
+      footerText: 'التقويم الاحترافي — تحويل دقيق وفق تقويم أم القرى · جميع التواريخ لأغراض إرشادية',
+      hijriAbbr: 'هـ',
+      gregorianAbbr: 'م',
+      monthDays2930: '29 أو 30 يوم',
+      monthDays2829: '28 أو 29 يوم',
+      monthDaysUnit: 'يوم',
+      notifHijriOutOfRange: 'السنة الهجرية خارج نطاق أم القرى ({min} – {max})',
+      notifHijriInvalidDay: 'اليوم غير صحيح لهذا الشهر الهجري (الأيام: {n})',
+      notifGregInvalid: 'تاريخ ميلادي غير صحيح.',
+      notifOutOfRange: 'التاريخ خارج نطاق تقويم أم القرى المدعوم.',
+      notifBirthInvalid: 'تاريخ ميلاد غير صحيح.',
+      notifBirthFuture: 'تاريخ الميلاد في المستقبل!',
+      notifHijriOutOfRangeShort: 'السنة الهجرية خارج النطاق المدعوم',
+      notifHijriInvalidDayShort: 'يوم غير صحيح للشهر الهجري (الأيام: {n})',
+      notifResultOutOfRange: 'النتيجة خارج نطاق تقويم أم القرى المدعوم.',
+      notifFirst: 'التاريخ الأول: ',
+      notifSecond: 'التاريخ الثاني: ',
+      resultConversionFrom: 'التحويل من {from} إلى {to}',
+      resultWeekday: 'اليوم المقابل: {day}',
+      ageTotal: 'العمر الكلي: {d} يوم — حوالي {h} ساعة',
+      diffTotalDays: 'إجمالي الفرق: {d} يوم = {w} أسبوع',
+      afterDays: 'بعد {n} يوم: {day}',
+      beforeDays: 'قبل {n} يوم: {day}',
+      countdown: '{d} يوم {h} ساعة {m} دقيقة',
+      sSalaryCivil: 'الرواتب المدنية',
+      sSalarySocial: 'الضمان الاجتماعي المطوّر',
+      sSalaryRehab: 'التأهيل الشامل',
+      sSalaryCitizen: 'حساب المواطن',
+      sSalaryHousing: 'الدعم السكني',
+      sSalaryPension: 'راتب التقاعد',
+      sSalaryInsurance: 'التأمينات الاجتماعية'
+    },
+    en: {
+      pageTitle: 'Professional Calendar — Hijri & Gregorian',
+      metaDesc: 'An advanced Hijri & Gregorian date tool — Umm al-Qura conversion, age calculation, date differences, and official salary payment dates.',
+      brandName: 'Professional Calendar',
+      brandTag: 'Hijri · Gregorian · Umm al-Qura',
+      nightMode: 'Dark mode',
+      dayMode: 'Light mode',
+      langToggleTitle: 'العربية',
+      salaryTitle: 'Salary Payment Dates',
+      salaryNote: 'Support / salaries and allowances — the dates below are the general official rule for each entity.',
+      salaryHead: '⚡ Salary Dates',
+      hijri: 'Hijri',
+      gregorian: 'Gregorian',
+      thEntity: 'Entity',
+      thDay: 'Day',
+      thDate: 'Payment Date',
+      thRemaining: 'Remaining',
+      toolsTitle: 'Date Tools',
+      tabConvert: 'Convert Date',
+      tabAge: 'Age',
+      tabAddDays: 'Add Days',
+      tabDiff: 'Date Difference',
+      fldDay: 'Day',
+      fldMonth: 'Month',
+      fldYear: 'Year',
+      btnConvert: 'Convert',
+      resultTitle: 'Conversion Result',
+      btnCalcAge: 'Calculate Age',
+      unitYear: 'Years',
+      unitMonth: 'Months',
+      unitDay: 'Days',
+      diffCalLabel: 'Calendar type for both dates',
+      diffDate1: 'First date (from)',
+      diffDate2: 'Second date (to)',
+      btnCalcDiff: 'Calculate Difference',
+      unitWeek: 'Weeks',
+      fldOperation: 'Operation',
+      opAdd: 'Add (after)',
+      opSub: 'Subtract (before)',
+      fldDayCount: 'Number of Days',
+      btnCalc: 'Calculate',
+      resultLabel: 'Result',
+      monthsTitle: 'Months of the Year',
+      gregorianDate: 'Gregorian Date',
+      hijriDate: 'Hijri Date',
+      bannerHint: '✨ The highlighted month below is the current month',
+      hijriMonths: '🌙 Hijri Months',
+      gregorianMonths: '☀️ Gregorian Months',
+      footerText: 'Professional Calendar — accurate conversion using the Umm al-Qura calendar · All dates are for informational purposes',
+      hijriAbbr: 'AH',
+      gregorianAbbr: 'AD',
+      monthDays2930: '29 or 30 days',
+      monthDays2829: '28 or 29 days',
+      monthDaysUnit: 'days',
+      notifHijriOutOfRange: 'The Hijri year is outside the Umm al-Qura range ({min} – {max})',
+      notifHijriInvalidDay: 'Invalid day for this Hijri month (days: {n})',
+      notifGregInvalid: 'Invalid Gregorian date.',
+      notifOutOfRange: 'The date is outside the supported Umm al-Qura range.',
+      notifBirthInvalid: 'Invalid birth date.',
+      notifBirthFuture: 'The birth date is in the future!',
+      notifHijriOutOfRangeShort: 'The Hijri year is outside the supported range',
+      notifHijriInvalidDayShort: 'Invalid day for the Hijri month (days: {n})',
+      notifResultOutOfRange: 'The result is outside the supported Umm al-Qura range.',
+      notifFirst: 'First date: ',
+      notifSecond: 'Second date: ',
+      resultConversionFrom: 'Convert from {from} to {to}',
+      resultWeekday: 'Corresponding day: {day}',
+      ageTotal: 'Total age: {d} days — about {h} hours',
+      diffTotalDays: 'Total difference: {d} days = {w} weeks',
+      afterDays: 'After {n} days: {day}',
+      beforeDays: 'Before {n} days: {day}',
+      countdown: '{d}d {h}h {m}m',
+      sSalaryCivil: "Civil Servants' Salaries",
+      sSalarySocial: 'Social Security (Developed)',
+      sSalaryRehab: 'Comprehensive Rehabilitation',
+      sSalaryCitizen: 'Citizen Account',
+      sSalaryHousing: 'Housing Support',
+      sSalaryPension: 'Pension',
+      sSalaryInsurance: 'Social Insurance'
+    }
+  };
+
+  // أسماء الأشهر وأيام الأسبوع حسب اللغة
+  const LANG_DATA = {
+    ar: {
+      hijri: ['محرم', 'صفر', 'ربيع الأول', 'ربيع الثاني', 'جمادى الأولى', 'جمادى الآخرة', 'رجب', 'شعبان', 'رمضان', 'شوال', 'ذو القعدة', 'ذو الحجة'],
+      gregorian: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'],
+      weekdays: ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت']
+    },
+    en: {
+      hijri: ['Muharram', 'Safar', "Rabi' al-Awwal", "Rabi' al-Thani", 'Jumada al-Awwal', 'Jumada al-Thani', 'Rajab', "Sha'ban", 'Ramadan', 'Shawwal', "Dhu al-Qi'dah", 'Dhu al-Hijjah'],
+      gregorian: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+      weekdays: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+    }
+  };
+
+  // المصفوفات الحالية — تُستبدل عند تغيير اللغة
+  let HIJRI_MONTHS = LANG_DATA.ar.hijri.slice();
+  let GREGORIAN_MONTHS = LANG_DATA.ar.gregorian.slice();
+  let WEEKDAYS = LANG_DATA.ar.weekdays.slice();
+
+  // جلب نص مترجم
+  function t(key) {
+    const d = I18N[curLang];
+    return (d && key in d) ? d[key] : (I18N.ar[key] || key);
+  }
+
+  // تنسيق نص مترجم مع استبدال {key}
+  function fmt(key, params) {
+    let s = t(key);
+    if (params) {
+      Object.keys(params).forEach((k) => {
+        s = s.split('{' + k + '}').join(params[k]);
+      });
+    }
+    return s;
+  }
+
+  // تطبيق مصفوفات اللغة على المتغيرات الحالية
+  function applyLanguageData() {
+    const d = LANG_DATA[curLang];
+    HIJRI_MONTHS = d.hijri.slice();
+    GREGORIAN_MONTHS = d.gregorian.slice();
+    WEEKDAYS = d.weekdays.slice();
+  }
 
   // بداية تقويم أم القرى: 1 محرم 1356هـ = 13 مارس 1937م
   // نقطة البداية تُحسب من التاريخ الميلادي لتجنّب أخطاء الاتفاق
@@ -252,7 +452,7 @@
           '<span class="m-name">' + name + '</span>' +
           '<span class="m-num">' + (i + 1) + '</span>' +
         '</span>' +
-        '<span class="m-days">29 أو 30 يوم</span>';
+        '<span class="m-days">' + t('monthDays2930') + '</span>';
       hijriList.appendChild(li);
     });
     hijriMonthItems = [...hijriList.children];
@@ -263,7 +463,7 @@
       const li = document.createElement('li');
       li.dataset.month = String(i + 1);
       const d = gregDays[i];
-      const label = d === 28 ? '28 أو 29 يوم' : d + ' يوم';
+      const label = d === 28 ? t('monthDays2829') : d + ' ' + t('monthDaysUnit');
       li.innerHTML =
         '<span class="m-badge"></span>' +
         '<span class="m-head">' +
@@ -443,33 +643,35 @@
       if (!isUqDateValid(y, m, d)) {
         const ml = uqMonthLength(y, m);
         notify(ml === null
-          ? 'السنة الهجرية خارج نطاق أم القرى (' + UQ_START_YEAR + ' – ' + UQ_MAX_YEAR + ')'
-          : 'اليوم غير صحيح لهذا الشهر الهجري (الأيام: ' + ml + ')');
+          ? fmt('notifHijriOutOfRange', { min: UQ_START_YEAR, max: UQ_MAX_YEAR })
+          : fmt('notifHijriInvalidDay', { n: ml }));
         return;
       }
       inputG = hijriToGregorian(y, m, d);
     } else {
-      if (!isValidGregorian(y, m, d)) { notify('تاريخ ميلادي غير صحيح.'); return; }
+      if (!isValidGregorian(y, m, d)) { notify(t('notifGregInvalid')); return; }
       inputG = { year: y, month: m, day: d };
     }
 
     if (to === 'hijri') {
       const h = gregorianToHijri(inputG.year, inputG.month, inputG.day);
-      if (!h) { notify('التاريخ خارج نطاق تقويم أم القرى المدعوم.'); return; }
-      fillDatePanel('h2gOutOutputText', 'h2gOutOutputName', h, HIJRI_MONTHS, 'هـ');
+      if (!h) { notify(t('notifOutOfRange')); return; }
+      fillDatePanel('h2gOutOutputText', 'h2gOutOutputName', h, HIJRI_MONTHS, t('hijriAbbr'));
     } else {
-      fillDatePanel('h2gOutOutputText', 'h2gOutOutputName', inputG, GREGORIAN_MONTHS, 'م');
+      fillDatePanel('h2gOutOutputText', 'h2gOutOutputName', inputG, GREGORIAN_MONTHS, t('gregorianAbbr'));
     }
 
     if (from === 'hijri') {
-      fillDatePanel('h2gOutInputText', 'h2gOutInputName', { day: d, month: m, year: y }, HIJRI_MONTHS, 'هـ');
+      fillDatePanel('h2gOutInputText', 'h2gOutInputName', { day: d, month: m, year: y }, HIJRI_MONTHS, t('hijriAbbr'));
     } else {
-      fillDatePanel('h2gOutInputText', 'h2gOutInputName', { day: d, month: m, year: y }, GREGORIAN_MONTHS, 'م');
+      fillDatePanel('h2gOutInputText', 'h2gOutInputName', { day: d, month: m, year: y }, GREGORIAN_MONTHS, t('gregorianAbbr'));
     }
 
-    $('h2gResultTitle').textContent = 'التحويل من ' + (from === 'hijri' ? 'هجري' : 'ميلادي') +
-      ' إلى ' + (to === 'hijri' ? 'هجري' : 'ميلادي');
-    $('h2gOutWeekday').textContent = 'اليوم المقابل: ' + weekdayOf(inputG);
+    $('h2gResultTitle').textContent = fmt('resultConversionFrom', {
+      from: from === 'hijri' ? t('hijri') : t('gregorian'),
+      to: to === 'hijri' ? t('hijri') : t('gregorian')
+    });
+    $('h2gOutWeekday').textContent = fmt('resultWeekday', { day: weekdayOf(inputG) });
     $('h2gResult').hidden = false;
   });
 
@@ -574,12 +776,12 @@
 
     let birthJDN;
     if (cal === 'gregorian') {
-      if (!isValidGregorian(y, m, d)) { notify('تاريخ ميلاد غير صحيح.'); return; }
+      if (!isValidGregorian(y, m, d)) { notify(t('notifBirthInvalid')); return; }
       birthJDN = gregorianToJDN(y, m, d);
     } else {
       if (!isUqDateValid(y, m, d)) {
         const ml = uqMonthLength(y, m);
-        notify(ml === null ? 'السنة الهجرية خارج النطاق المدعوم' : 'يوم غير صحيح للشهر الهجري (الأيام: ' + ml + ')');
+        notify(ml === null ? t('notifHijriOutOfRangeShort') : fmt('notifHijriInvalidDayShort', { n: ml }));
         return;
       }
       const g = hijriToGregorian(y, m, d);
@@ -588,15 +790,17 @@
 
     const now = new Date();
     const nowJDN = gregorianToJDN(now.getFullYear(), now.getMonth() + 1, now.getDate());
-    if (birthJDN > nowJDN) { notify('تاريخ الميلاد في المستقبل!'); return; }
+    if (birthJDN > nowJDN) { notify(t('notifBirthFuture')); return; }
 
     const res = diffInUnits(birthJDN, nowJDN);
 
     $('ageYears').textContent = res.years;
     $('ageMonths').textContent = res.months;
     $('ageDays').textContent = res.days;
-    $('ageSubText').textContent = 'العمر الكلي: ' + res.totalDays + ' يوم — حوالي ' +
-      (res.totalDays * 24).toLocaleString('en') + ' ساعة';
+    $('ageSubText').textContent = fmt('ageTotal', {
+      d: res.totalDays,
+      h: (res.totalDays * 24).toLocaleString('en')
+    });
     $('ageResult').hidden = false;
   });
 
@@ -610,13 +814,13 @@
       if (!isUqDateValid(y, m, d)) {
         const ml = uqMonthLength(y, m);
         return { ok: false, msg: ml === null
-          ? 'السنة الهجرية خارج نطاق أم القرى (' + UQ_START_YEAR + ' – ' + UQ_MAX_YEAR + ')'
-          : 'اليوم غير صحيح لهذا الشهر الهجري (الأيام: ' + ml + ')' };
+          ? fmt('notifHijriOutOfRange', { min: UQ_START_YEAR, max: UQ_MAX_YEAR })
+          : fmt('notifHijriInvalidDay', { n: ml }) };
       }
       const g = hijriToGregorian(y, m, d);
       return { ok: true, jdn: gregorianToJDN(g.year, g.month, g.day) };
     }
-    if (!isValidGregorian(y, m, d)) return { ok: false, msg: 'تاريخ ميلادي غير صحيح.' };
+    if (!isValidGregorian(y, m, d)) return { ok: false, msg: t('notifGregInvalid') };
     return { ok: true, jdn: gregorianToJDN(y, m, d) };
   }
 
@@ -631,9 +835,9 @@
     const y2 = parseInt($('diffYear2').value, 10);
 
     const r1 = dateToJDN(cal, d1, m1, y1);
-    if (!r1.ok) { notify('التاريخ الأول: ' + r1.msg); return; }
+    if (!r1.ok) { notify(t('notifFirst') + r1.msg); return; }
     const r2 = dateToJDN(cal, d2, m2, y2);
-    if (!r2.ok) { notify('التاريخ الثاني: ' + r2.msg); return; }
+    if (!r2.ok) { notify(t('notifSecond') + r2.msg); return; }
 
     const fromJDN = Math.min(r1.jdn, r2.jdn);
     const toJDN = Math.max(r1.jdn, r2.jdn);
@@ -644,7 +848,7 @@
     $('diffMonths').textContent = res.months;
     $('diffDays').textContent = res.days;
     $('diffWeeks').textContent = res.weeks;
-    $('diffTotalDays').textContent = 'إجمالي الفرق: ' + res.totalDays + ' يوم = ' + res.weeks + ' أسبوع';
+    $('diffTotalDays').textContent = fmt('diffTotalDays', { d: res.totalDays, w: res.weeks });
     $('diffResult').hidden = false;
   });
 
@@ -730,14 +934,14 @@
       if (!isUqDateValid(y, m, d)) {
         const ml = uqMonthLength(y, m);
         notify(ml === null
-          ? 'السنة الهجرية خارج نطاق أم القرى (' + UQ_START_YEAR + ' – ' + UQ_MAX_YEAR + ')'
-          : 'اليوم غير صحيح لهذا الشهر الهجري (الأيام: ' + ml + ')');
+          ? fmt('notifHijriOutOfRange', { min: UQ_START_YEAR, max: UQ_MAX_YEAR })
+          : fmt('notifHijriInvalidDay', { n: ml }));
         return;
       }
       const g = hijriToGregorian(y, m, d);
       baseJDN = gregorianToJDN(g.year, g.month, g.day);
     } else {
-      if (!isValidGregorian(y, m, d)) { notify('تاريخ ميلادي غير صحيح.'); return; }
+      if (!isValidGregorian(y, m, d)) { notify(t('notifGregInvalid')); return; }
       baseJDN = gregorianToJDN(y, m, d);
     }
 
@@ -750,24 +954,25 @@
     if (cal === 'hijri') {
       const hResult = gregorianToHijri(resultG.year, resultG.month, resultG.day);
       const hBase = gregorianToHijri(baseG.year, baseG.month, baseG.day);
-      if (!hResult || !hBase) { notify('النتيجة خارج نطاق تقويم أم القرى المدعوم.'); return; }
+      if (!hResult || !hBase) { notify(t('notifResultOutOfRange')); return; }
       $('addOutResultText').innerHTML = padDay(hResult.day) + '-' + padDay(hResult.month) + '-' + hResult.year +
-        ' <span class="unit">هـ</span>';
+        ' <span class="unit">' + t('hijriAbbr') + '</span>';
       $('addOutResultName').textContent = HIJRI_MONTHS[hResult.month - 1] + ' ' + hResult.month;
       $('addOutBaseText').innerHTML = padDay(hBase.day) + '-' + padDay(hBase.month) + '-' + hBase.year +
-        ' <span class="unit">هـ</span>';
+        ' <span class="unit">' + t('hijriAbbr') + '</span>';
       $('addOutBaseName').textContent = HIJRI_MONTHS[hBase.month - 1] + ' ' + hBase.month;
     } else {
       $('addOutResultText').innerHTML = padDay(resultG.day) + '-' + padDay(resultG.month) + '-' + resultG.year +
-        ' <span class="unit">م</span>';
+        ' <span class="unit">' + t('gregorianAbbr') + '</span>';
       $('addOutResultName').textContent = GREGORIAN_MONTHS[resultG.month - 1] + ' ' + resultG.month;
       $('addOutBaseText').innerHTML = padDay(baseG.day) + '-' + padDay(baseG.month) + '-' + baseG.year +
-        ' <span class="unit">م</span>';
+        ' <span class="unit">' + t('gregorianAbbr') + '</span>';
       $('addOutBaseName').textContent = GREGORIAN_MONTHS[baseG.month - 1] + ' ' + baseG.month;
     }
 
-    $('addOutWeekday').textContent = (op === 'add' ? 'بعد ' : 'قبل ') + days +
-      ' يوم: ' + weekdayOf(resultG);
+    $('addOutWeekday').textContent = (op === 'add'
+      ? fmt('afterDays', { n: days, day: weekdayOf(resultG) })
+      : fmt('beforeDays', { n: days, day: weekdayOf(resultG) }));
     $('addDaysResult').hidden = false;
   });
 
@@ -778,14 +983,15 @@
      ========================================================== */
 
   // قائمة الجهات وأيام الصرف (رقم اليوم الميلادي)
+  // الاسم مفتاح ترجمة (t('name')) ليُعرض حسب اللغة
   const SALARY_ITEMS = [
-    { name: 'الرواتب المدنية', day: 27, color: 'civil', desc: 'رواتب الموظفين المدنيين' },
-    { name: 'الضمان الاجتماعي المطوّر', day: 1, color: 'social', desc: 'مستحقات الضمان المطوّر' },
-    { name: 'التأهيل الشامل', day: 1, color: 'social', desc: 'إعاقة التأهيل الشامل' },
-    { name: 'حساب المواطن', day: 10, color: 'citizen', desc: 'دعم حساب المواطن' },
-    { name: 'الدعم السكني', day: 24, color: 'housing', desc: 'دعم برنامج سكني' },
-    { name: 'راتب التقاعد', day: 25, color: 'retirement', desc: 'رواتب المتقاعدين' },
-    { name: 'التأمينات الاجتماعية', day: 1, color: 'social', desc: 'معاشات التأمينات' }
+    { name: 'sSalaryCivil', day: 27, color: 'civil' },
+    { name: 'sSalarySocial', day: 1, color: 'social' },
+    { name: 'sSalaryRehab', day: 1, color: 'social' },
+    { name: 'sSalaryCitizen', day: 10, color: 'citizen' },
+    { name: 'sSalaryHousing', day: 24, color: 'housing' },
+    { name: 'sSalaryPension', day: 25, color: 'retirement' },
+    { name: 'sSalaryInsurance', day: 1, color: 'social' }
   ];
 
   function nextPaymentDate(dayOfMonth) {
@@ -801,6 +1007,7 @@
   function renderSalaryCards() {
     const tbody = $('salaryGrid');
     if (!tbody) return;
+    tbody.innerHTML = ''; // إعادة بناء نظيفة (دون تراكم صفوف/مؤقّتات)
 
     SALARY_ITEMS.forEach((item) => {
       const target = nextPaymentDate(item.day);
@@ -809,7 +1016,7 @@
 
       const tr = document.createElement('tr');
       tr.innerHTML =
-        '<td class="xl-name">' + item.name + '</td>' +
+        '<td class="xl-name">' + t(item.name) + '</td>' +
         '<td class="xl-day">' + weekdayOf(g) + '</td>' +
         '<td class="xl-date">' +
           '<span class="xl-date-val" data-mode="gregorian">' + fmtNumOnly(g) + '</span>' +
@@ -866,7 +1073,7 @@
     const d = Math.floor(diff / 86400000);
     const hrs = Math.floor((diff % 86400000) / 3600000);
     const mins = Math.floor((diff % 3600000) / 60000);
-    return d + ' يوم ' + hrs + ' ساعة ' + mins + ' دقيقة';
+    return fmt('countdown', { d: d, h: hrs, m: mins });
   }
 
   /* ==========================================================
@@ -881,7 +1088,7 @@
     document.documentElement.setAttribute('data-theme', theme);
     const isDark = theme === 'dark';
     themeIcon.textContent = isDark ? '☀️' : '🌙';
-    themeLabel.textContent = isDark ? 'الوضع النهاري' : 'الوضع الليلي';
+    themeLabel.textContent = isDark ? t('dayMode') : t('nightMode');
     try { localStorage.setItem('calendar-theme', theme); } catch (err) { /* تجاهل */ }
   }
 
@@ -901,6 +1108,79 @@
     const current = document.documentElement.getAttribute('data-theme');
     applyTheme(current === 'dark' ? 'light' : 'dark');
   });
+
+  /* ==========================================================
+     التبديل بين اللغتين (عربي / English)
+     ========================================================== */
+
+  // ترجمة كل عناصر الواجهة ذات data-i18n + العنوان والوصف + زر اللغة
+  function applyI18n() {
+    document.querySelectorAll('[data-i18n]').forEach((el) => {
+      const k = el.dataset.i18n;
+      if (k === 'nightMode') return; // تُضبط ديناميكياً عبر applyTheme()
+      el.textContent = t(k);
+    });
+
+    const langLabel = $('langLabel');
+    if (langLabel) langLabel.textContent = curLang === 'ar' ? t('langToggleTitle') : 'العربية';
+    const langBtn = $('langToggle');
+    if (langBtn) {
+      const next = curLang === 'ar' ? 'en' : 'ar';
+      const nextName = next === 'ar' ? 'العربية' : 'English';
+      langBtn.setAttribute('aria-label', nextName);
+      langBtn.title = nextName;
+    }
+
+    document.title = t('pageTitle');
+    const md = $('metaDescription');
+    if (md) md.setAttribute('content', t('metaDesc'));
+  }
+
+  // إعادة بناء المحتوى الديناميكي ليعكس اللغة الحالية
+  function renderLocalized() {
+    // حفظ اختيارات المستخدم في قوائم الشهور ثم إعادة تعبئتها بالجديدة
+    const selects = ['h2gMonth', 'ageMonth', 'addMonth', 'diffMonth1', 'diffMonth2']
+      .map((id) => $(id))
+      .filter(Boolean)
+      .map((el) => ({ el: el, val: el.value }));
+    populateMonthSelects();
+    selects.forEach(({ el, val }) => { el.value = val; });
+
+    renderMonthsLists();
+    renderToday();
+    renderSalaryCards();
+    applySalaryMode();
+  }
+
+  // ضبط اللغة وتطبيق كل ما يلزم (اتجاه، نص، بيانات)
+  function setLang(lang) {
+    curLang = (lang === 'en') ? 'en' : 'ar';
+    document.documentElement.setAttribute('lang', curLang);
+    document.documentElement.setAttribute('dir', curLang === 'ar' ? 'rtl' : 'ltr');
+    try { localStorage.setItem(LANG_STORAGE, curLang); } catch (err) { /* تجاهل */ }
+
+    applyLanguageData();
+    applyTheme(document.documentElement.getAttribute('data-theme') || 'light');
+    applyI18n();
+    renderLocalized();
+  }
+
+  // ربط زر تبديل اللغة
+  const langToggleEl = $('langToggle');
+  if (langToggleEl) {
+    langToggleEl.addEventListener('click', () => setLang(curLang === 'ar' ? 'en' : 'ar'));
+  }
+
+  // تهيئة اللغة عند الفتح (من التخزين المحلي أو الافتراضي: العربية)
+  function initLang() {
+    let saved = null;
+    try { saved = localStorage.getItem(LANG_STORAGE); } catch (err) { /* تجاهل */ }
+    curLang = saved === 'en' ? 'en' : 'ar';
+    document.documentElement.setAttribute('lang', curLang);
+    document.documentElement.setAttribute('dir', curLang === 'ar' ? 'rtl' : 'ltr');
+    applyLanguageData();
+    applyI18n();
+  }
 
   /* ==========================================================
      التشغيل
@@ -933,6 +1213,7 @@
   }
 
   function init() {
+    initLang();
     populateMonthSelects();
     renderMonthsLists();
     fillTodayDefaults();
@@ -940,6 +1221,7 @@
     setInterval(renderToday, 1000);
     renderSalaryCards();
     initTheme();
+    applyI18n();
   }
 
   document.addEventListener('DOMContentLoaded', init);

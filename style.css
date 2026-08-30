@@ -171,6 +171,43 @@ body {
   font-size: 17px;
 }
 
+/* زر تبديل اللغة */
+.lang-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  font-family: var(--font-main);
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text);
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.lang-toggle:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  transform: translateY(-1px);
+}
+
+.lang-icon {
+  font-size: 17px;
+}
+
+/* حاوية أزرار الترويسة: زرّا اللغة والوضع في سطر واحد، ملتصقان بالطرف */
+/* reverse لتكون اللغة في أقصى يسار المجموعة (بالعربي RTL) */
+.header-actions {
+  display: flex;
+  align-items: center;
+  flex-direction: row-reverse;
+  gap: 10px;
+  margin-left: auto; /* يدفع المجموعة إلى أقصى الطرف (يسار بالعربي) */
+}
+
 /* ===== الأقسام ===== */
 main.container {
   padding-top: 28px;
@@ -213,19 +250,6 @@ main.container {
   display: flex;
   align-items: center;
   gap: 12px;
-}
-
-.section-title .num {
-  width: 34px;
-  height: 34px;
-  display: inline-grid;
-  place-items: center;
-  background: var(--primary);
-  color: #fff;
-  border-radius: 10px;
-  font-size: 15px;
-  font-weight: 700;
-  flex-shrink: 0;
 }
 
 .section-note {
@@ -552,7 +576,8 @@ main.container {
   font-weight: 900;
   font-size: 20px;
   line-height: 1.2;
-  direction: rtl;
+  /* الاتجاه يتبع لغة المستند (rtl عربي / ltr إنجليزي) */
+  direction: inherit;
 }
 
 .panel-input .date-value {
@@ -1042,11 +1067,13 @@ main.container {
     font-size: 16px;
   }
 
-  .theme-label {
+  .theme-label,
+  .lang-label {
     display: none;
   }
 
-  .theme-toggle {
+  .theme-toggle,
+  .lang-toggle {
     padding: 9px 12px;
   }
 
@@ -1185,6 +1212,25 @@ main.container {
   .diff-pair {
     grid-template-columns: 1fr;
   }
+}
+
+/* ============================================================
+   إنجليزي (LTR) — تجاوزات
+   ============================================================ */
+html[dir="ltr"] body {
+  font-family: 'Inter', 'Tajawal', system-ui, sans-serif;
+}
+
+html[dir="ltr"] .excel-table {
+  text-align: left;
+}
+
+html[dir="ltr"] .toast {
+  text-align: left;
+}
+
+html[dir="ltr"] .date-value {
+  direction: ltr;
 }
 
 
