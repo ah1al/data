@@ -903,6 +903,18 @@ main.container {
   padding: 11px 14px;
 }
 
+.excel-table,
+.excel-table tbody,
+.excel-table tr,
+.excel-table td,
+.excel-table th {
+  display: table;
+}
+.excel-table tbody { display: table-row-group; }
+.excel-table tr { display: table-row; }
+.excel-table td,
+.excel-table th { display: table-cell; }
+
 .excel-table tbody tr {
   border-bottom: 1px solid var(--card-border);
   transition: background var(--transition);
