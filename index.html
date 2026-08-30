@@ -49,18 +49,25 @@
     <section class="section" id="salary-section">
       <h2 class="section-title"><span class="num">2</span> مواعيد نزول الرواتب</h2>
       <p class="section-note">دعم / رواتب ومساعدات — المواعيد أدناه هي القاعدة الرسمية العامة لكل جهة.</p>
-      <div class="table-wrap">
-        <table class="salary-table" id="salaryTable">
-          <thead>
-            <tr>
-              <th>الجهة</th>
-              <th>اليوم من الشهر</th>
-              <th>الموعد القادم</th>
-              <th>متبقي</th>
-            </tr>
-          </thead>
-          <tbody id="salaryBody"></tbody>
-        </table>
+      <div class="card salary-box">
+        <h3 class="months-head">⚡ مواعيد الرواتب</h3>
+        <div class="seg" id="salaryCalendar">
+          <button type="button" class="seg-btn active" data-cal="hijri">هجري</button>
+          <button type="button" class="seg-btn" data-cal="gregorian">ميلادي</button>
+        </div>
+        <div class="excel-wrap">
+          <table class="excel-table">
+            <thead>
+              <tr>
+                <th>الجهة</th>
+                <th>اليوم</th>
+                <th>تاريخ الصرف</th>
+                <th>متبقي</th>
+              </tr>
+            </thead>
+            <tbody id="salaryGrid"></tbody>
+          </table>
+        </div>
       </div>
     </section>
 

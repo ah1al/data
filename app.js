@@ -773,36 +773,64 @@
     return target;
   }
 
-  // يعرض مواعيد الرواتب في جدول واحد
+  // يعرض مواعيد الرواتب كجدول (الجهة / اليوم / التاريخ / متبقي)
   function renderSalaryCards() {
-    const body = $('salaryBody');
-    if (!body) return;
+    const tbody = $('salaryGrid');
+    if (!tbody) return;
 
     SALARY_ITEMS.forEach((item) => {
-      const tr = document.createElement('tr');
       const target = nextPaymentDate(item.day);
       const g = { year: target.getFullYear(), month: target.getMonth() + 1, day: target.getDate() };
       const h = gregorianToHijri(g.year, g.month, g.day);
 
-      const tds = [];
-      tds.push('<td>' + item.name + '</td>');
-      tds.push('<td class="t-center"><span class="day-badge">' + item.day + '</span></td>');
-      tds.push(
-        '<td>' + fmtNumDate(g, GREGORIAN_MONTHS) +
-        (h ? '<span class="t-hijri"> — ' + fmtNumDate(h, HIJRI_MONTHS) + '</span>' : '') +
-        '</td>'
-      );
-      tds.push('<td class="t-count" data-count>' + countdownText(target) + '</td>');
+      const tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td class="xl-name"><span class="xl-name-t">' + item.name + '</span></td>' +
+        '<td class="xl-day">' + weekdayOf(g) + '</td>' +
+        '<td class="xl-date">' +
+          '<span class="xl-date-val" data-mode="gregorian">' + fmtNumDate(g, GREGORIAN_MONTHS) + '</span>' +
+          (h ? '<span class="xl-date-val" data-mode="hijri">' + fmtNumDate(h, HIJRI_MONTHS) + '</span>' : '') +
+        '</td>' +
+        '<td class="xl-count" data-count> ' + countdownText(target) + '</td>';
 
-      tr.innerHTML = tds.join('');
+      tbody.appendChild(tr);
 
-      // تحديث العدّاد التنازلي المختصر
       const countEl = tr.querySelector('[data-count]');
-      const timer = setInterval(() => {
-        countEl.textContent = countdownText(nextPaymentDate(item.day));
+      setInterval(() => {
+        countEl.textContent = ' ' + countdownText(nextPaymentDate(item.day));
       }, 1000);
+    });
 
-      body.appendChild(tr);
+    // بعد البناء طبق تبويب اليوم
+    applySalaryMode();
+  }
+
+  // قراءة التبويب النشط (هجري/ميلادي)
+  function getSalaryCalendar() {
+    const el = $('salaryCalendar');
+    if (!el) return 'hijri';
+    const active = el.querySelector('.seg-btn.active');
+    return active ? active.dataset.cal : 'hijri';
+  }
+
+  // يطبّق التبويب على كل تاريخ في الجدول
+  function applySalaryMode() {
+    const mode = getSalaryCalendar();
+    document.querySelectorAll('.xl-date-val').forEach((el) => {
+      el.style.display = el.dataset.mode === mode ? '' : 'none';
+    });
+  }
+
+  // ربط أزرار تبويب التقويم في جدول الرواتب
+  const salaryCalEl = $('salaryCalendar');
+  if (salaryCalEl) {
+    salaryCalEl.querySelectorAll('.seg-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        salaryCalEl.querySelectorAll('.seg-btn').forEach((b) => {
+          b.classList.toggle('active', b === btn);
+        });
+        applySalaryMode();
+      });
     });
   }
 
