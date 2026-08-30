@@ -932,13 +932,11 @@ main.container {
 .excel-table .xl-day {
   color: var(--text-muted);
   font-size: 12px;
-  white-space: nowrap;
 }
 
 .excel-table .xl-date {
   font-weight: 600;
   font-size: 13px;
-  white-space: nowrap;
 }
 
 .excel-table .xl-date-val[data-mode="hijri"] {
@@ -1019,22 +1017,28 @@ main.container {
   }
 }
 
-/* الجوال: الجدول يبقى أعمدة (Excel) ويتمرر أفقياً داخل حاويته بلا تمدد الصفحة */
+/* الجوال: الجدول ينضغط داخل عرض الشاشة ويظهر كأعمدة (بلا تمرير خارجي) */
 @media (max-width: 640px) {
   .salary-box .excel-wrap {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    overflow: hidden;
     max-width: 100%;
   }
   .excel-table {
-    min-width: 600px;
-    max-width: 100%;
+    min-width: 0;
+    width: 100%;
   }
   .excel-table th,
   .excel-table td {
-    padding: 8px 10px;
+    padding: 8px 6px;
+    font-size: 12px;
+    white-space: normal;
+    overflow-wrap: break-word;
   }
   .excel-table .xl-name {
-    font-size: 13px;
+    font-size: 12px;
+  }
+  .excel-table .xl-day,
+  .excel-table .xl-count {
+    font-size: 11px;
   }
 }
