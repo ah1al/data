@@ -79,6 +79,10 @@
         <!-- تبويب التحويل -->
         <div id="tab-convert">
           <form id="h2gForm" class="convert-form" autocomplete="off">
+            <div class="seg" id="h2gFrom" role="tablist">
+              <button type="button" class="seg-btn active" data-cal="hijri">هجري</button>
+              <button type="button" class="seg-btn" data-cal="gregorian">ميلادي</button>
+            </div>
             <div class="fields-row conv-fields">
               <label class="field">
                 <span>اليوم</span>
@@ -91,13 +95,6 @@
               <label class="field">
                 <span>السنة</span>
                 <input type="number" id="h2gYear" min="1" max="9999" placeholder="1446" required />
-              </label>
-              <label class="field field-select">
-                <span>نوع التقويم</span>
-                <select id="h2gFrom">
-                  <option value="hijri">هجري</option>
-                  <option value="gregorian">ميلادي</option>
-                </select>
               </label>
             </div>
             <button type="submit" class="btn btn-primary">تحويل</button>
@@ -122,6 +119,11 @@
         <!-- تبويب حساب العمر -->
         <div id="tab-age" hidden>
           <form id="ageForm" class="convert-form" autocomplete="off">
+            <!-- اختيار نوع التقويم: زرّان واضحان -->
+            <div class="seg" id="ageCalendar" role="tablist">
+              <button type="button" class="seg-btn active" data-cal="hijri">هجري</button>
+              <button type="button" class="seg-btn" data-cal="gregorian">ميلادي</button>
+            </div>
             <div class="fields-row">
               <label class="field">
                 <span>اليوم</span>
@@ -133,14 +135,7 @@
               </label>
               <label class="field">
                 <span>السنة</span>
-                <input type="number" id="ageYear" min="1900" max="2100" placeholder="1990" required />
-              </label>
-              <label class="field field-select">
-                <span>نوع التقويم</span>
-                <select id="ageCalendar">
-                  <option value="gregorian">ميلادي</option>
-                  <option value="hijri">هجري</option>
-                </select>
+                <input type="number" id="ageYear" min="1" max="2100" placeholder="1990" required />
               </label>
             </div>
             <button type="submit" class="btn btn-primary">حساب العمر</button>
@@ -161,8 +156,8 @@
             <div class="diff-cal-row">
               <span class="diff-cal-label">نوع التقويم للتاريخين</span>
               <div class="seg" id="diffCalendar">
-                <button type="button" class="seg-btn active" data-cal="gregorian">ميلادي</button>
-                <button type="button" class="seg-btn" data-cal="hijri">هجري</button>
+                <button type="button" class="seg-btn active" data-cal="hijri">هجري</button>
+                <button type="button" class="seg-btn" data-cal="gregorian">ميلادي</button>
               </div>
             </div>
             <div class="diff-pair">
@@ -199,6 +194,10 @@
         <!-- تبويب إضافة/خصم أيام من تاريخ -->
         <div id="tab-adddays" hidden>
           <form id="addDaysForm" class="convert-form" autocomplete="off">
+            <div class="seg" id="addCalendar" role="tablist">
+              <button type="button" class="seg-btn active" data-cal="hijri">هجري</button>
+              <button type="button" class="seg-btn" data-cal="gregorian">ميلادي</button>
+            </div>
             <div class="fields-row">
               <label class="field">
                 <span>اليوم</span>
@@ -211,13 +210,6 @@
               <label class="field">
                 <span>السنة</span>
                 <input type="number" id="addYear" min="1" max="9999" placeholder="1446" required />
-              </label>
-              <label class="field field-select">
-                <span>نوع التقويم</span>
-                <select id="addCalendar">
-                  <option value="hijri">هجري</option>
-                  <option value="gregorian">ميلادي</option>
-                </select>
               </label>
               <label class="field field-select">
                 <span>العملية</span>
