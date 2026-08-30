@@ -280,6 +280,12 @@
     });
   }
 
+  // صيغة تاريخ رقمية موحّدة: 12-12-2022 - ديسمبر
+  function fmtNumDate(obj, monthsArr) {
+    const p2 = (n) => String(n).padStart(2, '0');
+    return p2(obj.day) + '-' + p2(obj.month) + '-' + obj.year + ' - ' + monthsArr[obj.month - 1];
+  }
+
   /* ==========================================================
      قسم 1: التاريخ الحالي
      ========================================================== */
@@ -293,17 +299,17 @@
 
     const hijri = gregorianToHijri(gYear, gMonth, gDay);
 
-    // شريط التاريخ الحالي (مدمج في الترويسة)
-    $('stripGregorian').textContent = gDay + ' ' + GREGORIAN_MONTHS[gMonth - 1] + ' ' + gYear + ' م';
+    // شريط التاريخ الحالي (مدمج في الترويسة): 12-12-2022 - ديسمبر
+    $('stripGregorian').textContent = fmtNumDate({ day: gDay, month: gMonth, year: gYear }, GREGORIAN_MONTHS);
     if (hijri) {
-      $('stripHijri').textContent = hijri.day + ' ' + HIJRI_MONTHS[hijri.month - 1] + ' ' + hijri.year + ' هـ';
+      $('stripHijri').textContent = fmtNumDate(hijri, HIJRI_MONTHS);
     }
 
     // شريط "تاريخ اليوم" في قسم الأشهر
     $('monthsWeekday').textContent = weekday + ' ' + gDay + ' ' + GREGORIAN_MONTHS[gMonth - 1] + ' ' + gYear;
-    $('monthsGregDate').textContent = gDay + ' ' + GREGORIAN_MONTHS[gMonth - 1] + ' ' + gYear + ' م';
+    $('monthsGregDate').textContent = fmtNumDate({ day: gDay, month: gMonth, year: gYear }, GREGORIAN_MONTHS);
     if (hijri) {
-      $('monthsHijriDate').textContent = hijri.day + ' ' + HIJRI_MONTHS[hijri.month - 1] + ' ' + hijri.year + ' هـ';
+      $('monthsHijriDate').textContent = fmtNumDate(hijri, HIJRI_MONTHS);
     }
 
     // تحديث تمييز الشهر الحالي في قوائم الأشهر
@@ -782,8 +788,8 @@
       tds.push('<td>' + item.name + '</td>');
       tds.push('<td class="t-center"><span class="day-badge">' + item.day + '</span></td>');
       tds.push(
-        '<td>' + g.day + ' ' + GREGORIAN_MONTHS[g.month - 1] + ' ' + g.year + ' م' +
-        (h ? '<span class="t-hijri"> — ' + h.day + ' ' + HIJRI_MONTHS[h.month - 1] + ' ' + h.year + ' هـ</span>' : '') +
+        '<td>' + fmtNumDate(g, GREGORIAN_MONTHS) +
+        (h ? '<span class="t-hijri"> — ' + fmtNumDate(h, HIJRI_MONTHS) + '</span>' : '') +
         '</td>'
       );
       tds.push('<td class="t-count" data-count>' + countdownText(target) + '</td>');
