@@ -1122,7 +1122,7 @@
     });
 
     const langLabel = $('langLabel');
-    if (langLabel) langLabel.textContent = curLang === 'ar' ? t('langToggleTitle') : 'العربية';
+    if (langLabel) langLabel.textContent = curLang === 'ar' ? 'EN' : 'AR';
     const langBtn = $('langToggle');
     if (langBtn) {
       const next = curLang === 'ar' ? 'en' : 'ar';
