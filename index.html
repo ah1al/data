@@ -29,7 +29,7 @@
         </span>
       </div>
 
-      <!-- شريط التاريخ الحالي (مدمج في الترويسة) -->
+      <!-- شريط التاريخ الحالي -->
       <div class="today-strip" id="today-section">
         <span class="today-strip-item">
           <span class="strip-icon">📆</span>
@@ -57,248 +57,231 @@
 
   <main class="container">
     <div class="top-sections">
-    <!-- قسم 2: مواعيد نزول الرواتب -->
-    <section class="section" id="salary-section">
-      <h2 class="section-title" data-i18n="salaryTitle">مواعيد نزول الرواتب</h2>
-      <p class="section-note" data-i18n="salaryNote">دعم / رواتب ومساعدات — المواعيد أدناه هي القاعدة الرسمية العامة لكل جهة.</p>
-      <div class="card salary-box">
-        <h3 class="months-head" data-i18n="salaryHead">⚡ مواعيد الرواتب</h3>
-        <div class="seg" id="salaryCalendar">
-          <button type="button" class="seg-btn active" data-cal="hijri" data-i18n="hijri">هجري</button>
-          <button type="button" class="seg-btn" data-cal="gregorian" data-i18n="gregorian">ميلادي</button>
+      <!-- مواعيد نزول الرواتب -->
+      <section class="section" id="salary-section">
+        <h2 class="section-title" data-i18n="salaryTitle">مواعيد نزول الرواتب</h2>
+        <p class="section-note" data-i18n="salaryNote">دعم / رواتب ومساعدات — المواعيد أدناه هي القاعدة الرسمية العامة لكل جهة.</p>
+        <div class="card salary-box">
+          <h3 class="months-head" data-i18n="salaryHead">⚡ مواعيد الرواتب</h3>
+          <div class="seg" id="salaryCalendar">
+            <button type="button" class="seg-btn active" data-cal="hijri" data-i18n="hijri">هجري</button>
+            <button type="button" class="seg-btn" data-cal="gregorian" data-i18n="gregorian">ميلادي</button>
+          </div>
+          <div class="excel-wrap">
+            <table class="excel-table">
+              <thead>
+                <tr>
+                  <th data-i18n="thEntity">الجهة</th>
+                  <th data-i18n="thDay">اليوم</th>
+                  <th data-i18n="thDate">تاريخ الصرف</th>
+                  <th data-i18n="thRemaining">متبقي</th>
+                </tr>
+              </thead>
+              <tbody id="salaryGrid"></tbody>
+            </table>
+          </div>
         </div>
-        <div class="excel-wrap">
-          <table class="excel-table">
-            <thead>
-              <tr>
-                <th data-i18n="thEntity">الجهة</th>
-                <th data-i18n="thDay">اليوم</th>
-                <th data-i18n="thDate">تاريخ الصرف</th>
-                <th data-i18n="thRemaining">متبقي</th>
-              </tr>
-            </thead>
-            <tbody id="salaryGrid"></tbody>
-          </table>
-        </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- قسم 3: أدوات التواريخ -->
-    <section class="section" id="convert-section">
-      <h2 class="section-title" data-i18n="toolsTitle">أدوات التواريخ</h2>
-      <div class="card">
-        <!-- التبويبات الرئيسية -->
-        <div class="tabs main-tabs" role="tablist">
-          <button class="tab active" data-main="convert" role="tab" aria-selected="true" data-i18n="tabConvert">تحويل تاريخ</button>
-          <button class="tab" data-main="age" role="tab" aria-selected="false" data-i18n="tabAge">حساب عمر</button>
-          <button class="tab" data-main="adddays" role="tab" aria-selected="false" data-i18n="tabAddDays">حساب أيام</button>
-          <button class="tab" data-main="diff" role="tab" aria-selected="false" data-i18n="tabDiff">حساب فترة</button>
-        </div>
+      <!-- أدوات التواريخ -->
+      <section class="section" id="convert-section">
+        <h2 class="section-title" data-i18n="toolsTitle">أدوات التواريخ</h2>
+        <div class="card">
+          <div class="tabs main-tabs" role="tablist">
+            <button class="tab active" data-main="convert" role="tab" aria-selected="true" data-i18n="tabConvert">تحويل تاريخ</button>
+            <button class="tab" data-main="age" role="tab" aria-selected="false" data-i18n="tabAge">حساب عمر</button>
+            <button class="tab" data-main="adddays" role="tab" aria-selected="false" data-i18n="tabAddDays">حساب أيام</button>
+            <button class="tab" data-main="diff" role="tab" aria-selected="false" data-i18n="tabDiff">حساب فترة</button>
+          </div>
 
-        <!-- تبويب التحويل -->
-        <div id="tab-convert">
-          <form id="h2gForm" class="convert-form" autocomplete="off">
-            <div class="seg" id="h2gFrom" role="tablist">
-              <button type="button" class="seg-btn active" data-cal="hijri" data-i18n="hijri">هجري</button>
-              <button type="button" class="seg-btn" data-cal="gregorian" data-i18n="gregorian">ميلادي</button>
-            </div>
-            <div class="fields-row conv-fields">
-              <label class="field">
-                <span data-i18n="fldDay">اليوم</span>
-                <input type="number" id="h2gDay" min="1" max="31" placeholder="1" required />
-              </label>
-              <label class="field">
-                <span data-i18n="fldMonth">الشهر</span>
-                <select id="h2gMonth" required></select>
-              </label>
-              <label class="field">
-                <span data-i18n="fldYear">السنة</span>
-                <input type="number" id="h2gYear" min="1" max="9999" placeholder="1446" required />
-              </label>
-            </div>
-            <button type="submit" class="btn btn-primary" data-i18n="btnConvert">تحويل</button>
-            <div class="result-box" id="h2gResult" hidden>
-              <div class="result-title" id="h2gResultTitle" data-i18n="resultTitle">نتيجة التحويل</div>
-              <div class="result-dates">
-                <div class="date-panel panel-input" id="h2gOutInputPanel">
-                  <div class="date-value" id="h2gOutInputText"></div>
-                  <div class="date-sub" id="h2gOutInputName"></div>
-                </div>
-                <div class="panel-arrow">←</div>
-                <div class="date-panel panel-output" id="h2gOutOutputPanel">
-                  <div class="date-value" id="h2gOutOutputText"></div>
-                  <div class="date-sub" id="h2gOutOutputName"></div>
-                </div>
-              </div>
-              <div class="result-weekday" id="h2gOutWeekday"></div>
-            </div>
-          </form>
-        </div>
-
-        <!-- تبويب حساب العمر -->
-        <div id="tab-age" hidden>
-          <form id="ageForm" class="convert-form" autocomplete="off">
-            <!-- اختيار نوع التقويم: زرّان واضحان -->
-            <div class="seg" id="ageCalendar" role="tablist">
-              <button type="button" class="seg-btn active" data-cal="hijri" data-i18n="hijri">هجري</button>
-              <button type="button" class="seg-btn" data-cal="gregorian" data-i18n="gregorian">ميلادي</button>
-            </div>
-            <div class="fields-row">
-              <label class="field">
-                <span data-i18n="fldDay">اليوم</span>
-                <input type="number" id="ageDay" min="1" max="31" placeholder="1" required />
-              </label>
-              <label class="field">
-                <span data-i18n="fldMonth">الشهر</span>
-                <select id="ageMonth" required></select>
-              </label>
-              <label class="field">
-                <span data-i18n="fldYear">السنة</span>
-                <input type="number" id="ageYear" min="1" max="2100" placeholder="1990" required />
-              </label>
-            </div>
-            <button type="submit" class="btn btn-primary" data-i18n="btnCalcAge">حساب العمر</button>
-            <div class="result-box age-result" id="ageResult" hidden>
-              <div class="age-blocks">
-                <div class="age-block"><strong id="ageYears">0</strong><span data-i18n="unitYear">سنة</span></div>
-                <div class="age-block"><strong id="ageMonths">0</strong><span data-i18n="unitMonth">شهر</span></div>
-                <div class="age-block"><strong id="ageDays">0</strong><span data-i18n="unitDay">يوم</span></div>
-              </div>
-              <p class="age-sub" id="ageSubText"></p>
-            </div>
-          </form>
-        </div>
-
-        <!-- تبويب الفرق بين تاريخين -->
-        <div id="tab-diff" hidden>
-          <form id="diffForm" class="convert-form" autocomplete="off">
-            <div class="diff-cal-row">
-              <span class="diff-cal-label" data-i18n="diffCalLabel">نوع التقويم للتاريخين</span>
-              <div class="seg" id="diffCalendar">
+          <!-- تحويل -->
+          <div id="tab-convert">
+            <form id="h2gForm" class="convert-form" autocomplete="off">
+              <div class="seg" id="h2gFrom" role="tablist">
                 <button type="button" class="seg-btn active" data-cal="hijri" data-i18n="hijri">هجري</button>
                 <button type="button" class="seg-btn" data-cal="gregorian" data-i18n="gregorian">ميلادي</button>
               </div>
-            </div>
-            <div class="diff-pair">
-              <fieldset class="diff-date">
-                <legend data-i18n="diffDate1">التاريخ الأول (من)</legend>
-                <div class="fields-row">
-                  <label class="field"><span data-i18n="fldDay">اليوم</span><input type="number" id="diffDay1" min="1" max="31" required /></label>
-                  <label class="field"><span data-i18n="fldMonth">الشهر</span><select id="diffMonth1" required></select></label>
-                  <label class="field"><span data-i18n="fldYear">السنة</span><input type="number" id="diffYear1" min="1" max="9999" required /></label>
-                </div>
-              </fieldset>
-              <fieldset class="diff-date">
-                <legend data-i18n="diffDate2">التاريخ الثاني (إلى)</legend>
-                <div class="fields-row">
-                  <label class="field"><span data-i18n="fldDay">اليوم</span><input type="number" id="diffDay2" min="1" max="31" required /></label>
-                  <label class="field"><span data-i18n="fldMonth">الشهر</span><select id="diffMonth2" required></select></label>
-                  <label class="field"><span data-i18n="fldYear">السنة</span><input type="number" id="diffYear2" min="1" max="9999" required /></label>
-                </div>
-              </fieldset>
-            </div>
-            <button type="submit" class="btn btn-primary" data-i18n="btnCalcDiff">حساب الفرق</button>
-            <div class="result-box diff-result" id="diffResult" hidden>
-              <div class="age-blocks">
-                <div class="age-block"><strong id="diffYears">0</strong><span data-i18n="unitYear">سنة</span></div>
-                <div class="age-block"><strong id="diffMonths">0</strong><span data-i18n="unitMonth">شهر</span></div>
-                <div class="age-block"><strong id="diffDays">0</strong><span data-i18n="unitDay">يوم</span></div>
-                <div class="age-block"><strong id="diffWeeks">0</strong><span data-i18n="unitWeek">أسبوع</span></div>
+              <div class="fields-row conv-fields">
+                <label class="field">
+                  <span data-i18n="fldDay">اليوم</span>
+                  <input type="number" id="h2gDay" min="1" max="31" placeholder="1" required />
+                </label>
+                <label class="field">
+                  <span data-i18n="fldMonth">الشهر</span>
+                  <select id="h2gMonth" required></select>
+                </label>
+                <label class="field">
+                  <span data-i18n="fldYear">السنة</span>
+                  <input type="number" id="h2gYear" min="1" max="9999" placeholder="1446" required />
+                </label>
               </div>
-              <p class="age-sub" id="diffTotalDays"></p>
-            </div>
-          </form>
-        </div>
+              <button type="submit" class="btn btn-primary" data-i18n="btnConvert">تحويل</button>
+              <div class="result-box" id="h2gResult" hidden>
+                <div class="result-title" id="h2gResultTitle" data-i18n="resultTitle">نتيجة التحويل</div>
+                <div class="result-dates">
+                  <div class="date-panel panel-input" id="h2gOutInputPanel">
+                    <div class="date-value" id="h2gOutInputText"></div>
+                    <div class="date-sub" id="h2gOutInputName"></div>
+                  </div>
+                  <div class="panel-arrow">←</div>
+                  <div class="date-panel panel-output" id="h2gOutOutputPanel">
+                    <div class="date-value" id="h2gOutOutputText"></div>
+                    <div class="date-sub" id="h2gOutOutputName"></div>
+                  </div>
+                </div>
+                <div class="result-weekday" id="h2gOutWeekday"></div>
+              </div>
+            </form>
+          </div>
 
-        <!-- تبويب إضافة/خصم أيام من تاريخ -->
-        <div id="tab-adddays" hidden>
-          <form id="addDaysForm" class="convert-form" autocomplete="off">
-            <div class="seg" id="addCalendar" role="tablist">
-              <button type="button" class="seg-btn active" data-cal="hijri" data-i18n="hijri">هجري</button>
-              <button type="button" class="seg-btn" data-cal="gregorian" data-i18n="gregorian">ميلادي</button>
-            </div>
-            <div class="fields-row">
-              <label class="field">
-                <span data-i18n="fldDay">اليوم</span>
-                <input type="number" id="addDay" min="1" max="31" placeholder="1" required />
-              </label>
-              <label class="field">
-                <span data-i18n="fldMonth">الشهر</span>
-                <select id="addMonth" required></select>
-              </label>
-              <label class="field">
-                <span data-i18n="fldYear">السنة</span>
-                <input type="number" id="addYear" min="1" max="9999" placeholder="1446" required />
-              </label>
-              <label class="field field-select">
-                <span data-i18n="fldOperation">العملية</span>
-                <select id="addOp">
-                  <option value="add" data-i18n="opAdd">إضافة (بعد)</option>
-                  <option value="sub" data-i18n="opSub">خصم (قبل)</option>
-                </select>
-              </label>
-              <label class="field">
-                <span data-i18n="fldDayCount">عدد الأيام</span>
-                <input type="number" id="addCount" min="0" max="36500" placeholder="8" required />
-              </label>
-            </div>
-            <button type="submit" class="btn btn-primary" data-i18n="btnCalc">حساب</button>
-            <div class="result-box" id="addDaysResult" hidden>
-              <div class="result-title" data-i18n="resultLabel">النتيجة</div>
-              <div class="result-dates">
-                <div class="date-panel panel-input">
-                  <div class="date-value" id="addOutBaseText"></div>
-                  <div class="date-sub" id="addOutBaseName"></div>
+          <!-- حساب العمر -->
+          <div id="tab-age" hidden>
+            <form id="ageForm" class="convert-form" autocomplete="off">
+              <div class="seg" id="ageCalendar" role="tablist">
+                <button type="button" class="seg-btn active" data-cal="hijri" data-i18n="hijri">هجري</button>
+                <button type="button" class="seg-btn" data-cal="gregorian" data-i18n="gregorian">ميلادي</button>
+              </div>
+              <div class="fields-row">
+                <label class="field">
+                  <span data-i18n="fldDay">اليوم</span>
+                  <input type="number" id="ageDay" min="1" max="31" placeholder="1" required />
+                </label>
+                <label class="field">
+                  <span data-i18n="fldMonth">الشهر</span>
+                  <select id="ageMonth" required></select>
+                </label>
+                <label class="field">
+                  <span data-i18n="fldYear">السنة</span>
+                  <input type="number" id="ageYear" min="1" max="2100" placeholder="1990" required />
+                </label>
+              </div>
+              <button type="submit" class="btn btn-primary" data-i18n="btnCalcAge">حساب العمر</button>
+              <div class="result-box age-result" id="ageResult" hidden>
+                <div class="age-blocks">
+                  <div class="age-block"><strong id="ageYears">0</strong><span data-i18n="unitYear">سنة</span></div>
+                  <div class="age-block"><strong id="ageMonths">0</strong><span data-i18n="unitMonth">شهر</span></div>
+                  <div class="age-block"><strong id="ageDays">0</strong><span data-i18n="unitDay">يوم</span></div>
                 </div>
-                <div class="panel-arrow">→</div>
-                <div class="date-panel panel-output">
-                  <div class="date-value" id="addOutResultText"></div>
-                  <div class="date-sub" id="addOutResultName"></div>
+                <p class="age-sub" id="ageSubText"></p>
+              </div>
+            </form>
+          </div>
+
+          <!-- حساب الفترة -->
+          <div id="tab-diff" hidden>
+            <form id="diffForm" class="convert-form" autocomplete="off">
+              <div class="diff-cal-row">
+                <span class="diff-cal-label" data-i18n="diffCalLabel">نوع التقويم للتاريخين</span>
+                <div class="seg" id="diffCalendar">
+                  <button type="button" class="seg-btn active" data-cal="hijri" data-i18n="hijri">هجري</button>
+                  <button type="button" class="seg-btn" data-cal="gregorian" data-i18n="gregorian">ميلادي</button>
                 </div>
               </div>
-              <div class="result-weekday" id="addOutWeekday"></div>
-            </div>
-          </form>
+              <div class="diff-pair">
+                <fieldset class="diff-date">
+                  <legend data-i18n="diffDate1">التاريخ الأول (من)</legend>
+                  <div class="fields-row">
+                    <label class="field"><span data-i18n="fldDay">اليوم</span><input type="number" id="diffDay1" min="1" max="31" required /></label>
+                    <label class="field"><span data-i18n="fldMonth">الشهر</span><select id="diffMonth1" required></select></label>
+                    <label class="field"><span data-i18n="fldYear">السنة</span><input type="number" id="diffYear1" min="1" max="9999" required /></label>
+                  </div>
+                </fieldset>
+                <fieldset class="diff-date">
+                  <legend data-i18n="diffDate2">التاريخ الثاني (إلى)</legend>
+                  <div class="fields-row">
+                    <label class="field"><span data-i18n="fldDay">اليوم</span><input type="number" id="diffDay2" min="1" max="31" required /></label>
+                    <label class="field"><span data-i18n="fldMonth">الشهر</span><select id="diffMonth2" required></select></label>
+                    <label class="field"><span data-i18n="fldYear">السنة</span><input type="number" id="diffYear2" min="1" max="9999" required /></label>
+                  </div>
+                </fieldset>
+              </div>
+              <button type="submit" class="btn btn-primary" data-i18n="btnCalcDiff">حساب الفرق</button>
+              <div class="result-box diff-result" id="diffResult" hidden>
+                <div class="age-blocks">
+                  <div class="age-block"><strong id="diffYears">0</strong><span data-i18n="unitYear">سنة</span></div>
+                  <div class="age-block"><strong id="diffMonths">0</strong><span data-i18n="unitMonth">شهر</span></div>
+                  <div class="age-block"><strong id="diffDays">0</strong><span data-i18n="unitDay">يوم</span></div>
+                  <div class="age-block"><strong id="diffWeeks">0</strong><span data-i18n="unitWeek">أسبوع</span></div>
+                </div>
+                <p class="age-sub" id="diffTotalDays"></p>
+              </div>
+            </form>
+          </div>
+
+          <!-- حساب أيام -->
+          <div id="tab-adddays" hidden>
+            <form id="addDaysForm" class="convert-form" autocomplete="off">
+              <div class="seg" id="addCalendar" role="tablist">
+                <button type="button" class="seg-btn active" data-cal="hijri" data-i18n="hijri">هجري</button>
+                <button type="button" class="seg-btn" data-cal="gregorian" data-i18n="gregorian">ميلادي</button>
+              </div>
+              <div class="fields-row">
+                <label class="field">
+                  <span data-i18n="fldDay">اليوم</span>
+                  <input type="number" id="addDay" min="1" max="31" placeholder="1" required />
+                </label>
+                <label class="field">
+                  <span data-i18n="fldMonth">الشهر</span>
+                  <select id="addMonth" required></select>
+                </label>
+                <label class="field">
+                  <span data-i18n="fldYear">السنة</span>
+                  <input type="number" id="addYear" min="1" max="9999" placeholder="1446" required />
+                </label>
+                <label class="field field-select">
+                  <span data-i18n="fldOperation">العملية</span>
+                  <select id="addOp">
+                    <option value="add" data-i18n="opAdd">إضافة (بعد)</option>
+                    <option value="sub" data-i18n="opSub">خصم (قبل)</option>
+                  </select>
+                </label>
+                <label class="field">
+                  <span data-i18n="fldDayCount">عدد الأيام</span>
+                  <input type="number" id="addCount" min="0" max="36500" placeholder="8" required />
+                </label>
+              </div>
+              <button type="submit" class="btn btn-primary" data-i18n="btnCalc">حساب</button>
+              <div class="result-box" id="addDaysResult" hidden>
+                <div class="result-title" data-i18n="resultLabel">النتيجة</div>
+                <div class="result-dates">
+                  <div class="date-panel panel-input">
+                    <div class="date-value" id="addOutBaseText"></div>
+                    <div class="date-sub" id="addOutBaseName"></div>
+                  </div>
+                  <div class="panel-arrow">→</div>
+                  <div class="date-panel panel-output">
+                    <div class="date-value" id="addOutResultText"></div>
+                    <div class="date-sub" id="addOutResultName"></div>
+                  </div>
+                </div>
+                <div class="result-weekday" id="addOutWeekday"></div>
+              </div>
+            </form>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
     </div>
 
-    <!-- قسم 4: الأشهر -->
+    <!-- قسم الأشهر المصغر -->
     <section class="section" id="months-section">
       <h2 class="section-title" data-i18n="monthsTitle">أشهر السنة</h2>
 
-      <!-- شريط تاريخ اليوم -->
-      <div class="today-banner card">
-        <div class="banner-weekday" id="monthsWeekday">—</div>
-        <div class="banner-date">
-          <div class="banner-gregorian">
-            <span class="banner-icon">📆</span>
-            <div>
-              <span class="banner-label" data-i18n="gregorianDate">التاريخ الميلادي</span>
-              <span class="banner-value" id="monthsGregDate">—</span>
-            </div>
-          </div>
-          <div class="banner-sep">•</div>
-          <div class="banner-hijri">
-            <span class="banner-icon">🌙</span>
-            <div>
-              <span class="banner-label" data-i18n="hijriDate">التاريخ الهجري</span>
-              <span class="banner-value" id="monthsHijriDate">—</span>
-            </div>
-          </div>
+      <div class="months-compact-wrapper">
+        <div class="seg months-seg" id="monthsCalendarToggle">
+          <button type="button" class="seg-btn active" data-cal="hijri" data-i18n="hijri">هجري</button>
+          <button type="button" class="seg-btn" data-cal="gregorian" data-i18n="gregorian">ميلادي</button>
         </div>
-        <div class="banner-hint" data-i18n="bannerHint">✨ الشهر المميّز أدناه هو شهر اليوم الحالي</div>
-      </div>
 
-      <div class="months-grid">
-        <div class="card">
-          <h3 class="months-head" data-i18n="hijriMonths">🌙 الأشهر الهجرية</h3>
-          <ul class="months-list" id="hijriMonthsList"></ul>
-        </div>
-        <div class="card">
-          <h3 class="months-head" data-i18n="gregorianMonths">☀️ الأشهر الميلادية</h3>
-          <ul class="months-list" id="gregorianMonthsList"></ul>
+        <div class="card months-compact-card">
+          <div class="current-month-banner" id="currentMonthBanner">
+            <span class="banner-tag">الشهر الحالي</span>
+            <div class="banner-info">
+              <strong id="curMonthName">—</strong>
+              <span id="curMonthMeta">—</span>
+            </div>
+          </div>
+
+          <div class="months-mini-grid" id="compactMonthsGrid"></div>
         </div>
       </div>
     </section>
@@ -310,7 +293,6 @@
     </div>
   </footer>
 
-  <!-- نافذة تنبيه مدمجة (بديل مريح عن alert() على الجوال) -->
   <div id="toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" hidden></div>
 
   <script src="app.js"></script>

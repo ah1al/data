@@ -6,19 +6,10 @@
 (function () {
   'use strict';
 
-  /* ==========================================================
-     تقويم أم القرى — تحويل دقيق
-     المرجع: الجدول الرسمي لأم القرى (1356هـ – 1500هـ)
-     ========================================================== */
-
-  /* ==========================================================
-     التعدد اللغوي (عربي / English)
-     ========================================================== */
-
   const LANG_STORAGE = 'calendar-lang';
   let curLang = 'ar';
+  let activeMonthsCal = 'hijri';
 
-  // قواميس النصوص (الواجهة الثابتة + الرسائل الديناميكية)
   const I18N = {
     ar: {
       pageTitle: 'التقويم الاحترافي — هجري وميلادي',
@@ -63,9 +54,6 @@
       btnCalc: 'حساب',
       resultLabel: 'النتيجة',
       monthsTitle: 'أشهر السنة',
-      gregorianDate: 'التاريخ الميلادي',
-      hijriDate: 'التاريخ الهجري',
-      bannerHint: '✨ الشهر المميّز أدناه هو شهر اليوم الحالي',
       hijriMonths: '🌙 الأشهر الهجرية',
       gregorianMonths: '☀️ الأشهر الميلادية',
       footerText: 'التقويم الاحترافي — تحويل دقيق وفق تقويم أم القرى · جميع التواريخ لأغراض إرشادية',
@@ -143,9 +131,6 @@
       btnCalc: 'Calculate',
       resultLabel: 'Result',
       monthsTitle: 'Months of the Year',
-      gregorianDate: 'Gregorian Date',
-      hijriDate: 'Hijri Date',
-      bannerHint: '✨ The highlighted month below is the current month',
       hijriMonths: '🌙 Hijri Months',
       gregorianMonths: '☀️ Gregorian Months',
       footerText: 'Professional Calendar — accurate conversion using the Umm al-Qura calendar · All dates are for informational purposes',
@@ -182,7 +167,6 @@
     }
   };
 
-  // أسماء الأشهر وأيام الأسبوع حسب اللغة
   const LANG_DATA = {
     ar: {
       hijri: ['محرم', 'صفر', 'ربيع الأول', 'ربيع الثاني', 'جمادى الأولى', 'جمادى الآخرة', 'رجب', 'شعبان', 'رمضان', 'شوال', 'ذو القعدة', 'ذو الحجة'],
@@ -196,18 +180,15 @@
     }
   };
 
-  // المصفوفات الحالية — تُستبدل عند تغيير اللغة
   let HIJRI_MONTHS = LANG_DATA.ar.hijri.slice();
   let GREGORIAN_MONTHS = LANG_DATA.ar.gregorian.slice();
   let WEEKDAYS = LANG_DATA.ar.weekdays.slice();
 
-  // جلب نص مترجم
   function t(key) {
     const d = I18N[curLang];
     return (d && key in d) ? d[key] : (I18N.ar[key] || key);
   }
 
-  // تنسيق نص مترجم مع استبدال {key}
   function fmt(key, params) {
     let s = t(key);
     if (params) {
@@ -218,7 +199,6 @@
     return s;
   }
 
-  // تطبيق مصفوفات اللغة على المتغيرات الحالية
   function applyLanguageData() {
     const d = LANG_DATA[curLang];
     HIJRI_MONTHS = d.hijri.slice();
@@ -226,15 +206,9 @@
     WEEKDAYS = d.weekdays.slice();
   }
 
-  // بداية تقويم أم القرى: 1 محرم 1356هـ = 13 مارس 1937م
-  // نقطة البداية تُحسب من التاريخ الميلادي لتجنّب أخطاء الاتفاق
   const UQ_START_GY = 1937, UQ_START_GM = 3, UQ_START_GD = 13;
   const UQ_START_YEAR = 1356;
 
-  // جدول أطوال أشهر أم القرى الرسمي (1356هـ → 1500هـ، 145 قيمة)
-  // المصدر: جدول Microsoft .NET UmAlQuraCalendar الرسمي.
-  // كل قيمة تمثل سنة هجرية واحدة: 12 بت، البت بلو الرتبة (bit 0) = محرم.
-  // البت = 1 يعني 30 يوم، 0 يعني 29 يوم.
   const UMMALQURA_DATA = [
     0x0EC9, 0x0D92, 0x0D25, 0x0A4D, 0x02AD, 0x056D, 0x0B6A, 0x0B52, 0x0AA5, 0x0A4B,
     0x0497, 0x0937, 0x02B6, 0x0575, 0x0D6A, 0x0D52, 0x0A96, 0x092D, 0x025D, 0x04DD,
@@ -253,12 +227,8 @@
     0x0A57, 0x0536, 0x0AB5, 0x06AA, 0x0E93
   ];
 
-  // عدد السنوات المتاحة في الجدول
   const UQ_MAX_YEAR = UQ_START_YEAR + UMMALQURA_DATA.length - 1;
-  // نقطة البداية باليوم اليولياني (تُحسب من التاريخ الميلادي)
   const UMMALQURA_START_JDN = gregorianToJDN(UQ_START_GY, UQ_START_GM, UQ_START_GD);
-
-  /* ---------- تحويل ميلادي <-> يوم يولياني (JDN) ---------- */
 
   function gregorianToJDN(year, month, day) {
     const a = Math.floor((14 - month) / 12);
@@ -281,10 +251,7 @@
     return { year, month, day };
   }
 
-  /* ---------- أطوال أشهر أم القرى ---------- */
-
   function uqMonthLength(year, month) {
-    // month: 1..12  —  البت بلو الرتبة (bit 0) يمثل محرم
     const idx = year - UQ_START_YEAR;
     if (idx < 0 || idx >= UMMALQURA_DATA.length) return null;
     const code = UMMALQURA_DATA[idx];
@@ -308,8 +275,6 @@
     return day >= 1 && day <= ml;
   }
 
-  /* ---------- تحويل هجري (أم القرى) -> ميلادي ---------- */
-
   function hijriToJDN(year, month, day) {
     let jdn = UMMALQURA_START_JDN;
     for (let y = UQ_START_YEAR; y < year; y++) {
@@ -331,8 +296,6 @@
     if (jdn === null) return null;
     return jdnToGregorian(jdn);
   }
-
-  /* ---------- تحويل ميلادي -> هجري (أم القرى) ---------- */
 
   function gregorianToHijri(year, month, day) {
     const jdn = gregorianToJDN(year, month, day);
@@ -360,13 +323,9 @@
     return { year: hy, month: hm, day: remaining + 1 };
   }
 
-  /* ==========================================================
-     أدوات مساعدة
-     ========================================================== */
-
   function weekdayOf(gregDate) {
     const jdn = gregorianToJDN(gregDate.year, gregDate.month, gregDate.day);
-    const idx = ((jdn + 1) % 7 + 7) % 7; // جعل الأحد = 0
+    const idx = ((jdn + 1) % 7 + 7) % 7;
     return WEEKDAYS[idx];
   }
 
@@ -380,19 +339,12 @@
     return d >= 1 && d <= daysInGregorianMonth(y, m);
   }
 
-  /* ==========================================================
-     تهيئة الواجهة
-     ========================================================== */
-
   const $ = (id) => document.getElementById(id);
 
-  /* نافذة تنبيه مدمجة بديلة عن alert()
-     — مريحة جداً على الجوال ولا تفتح نافذة المتصفح */
   let toastTimer = null;
   function notify(message, isError) {
     const toast = $('toast');
     if (!toast) { alert(message); return; }
-    // إعادة ضبط المهلة السابقة
     if (toastTimer) clearTimeout(toastTimer);
     toast.textContent = message;
     toast.classList.toggle('toast-error', !!isError);
@@ -405,7 +357,6 @@
   }
 
   function populateMonths(selectEl, arr) {
-    // إعادة بناء قائمة الشهور بشكل نظيف (تراكيب متوافقة مع كل المتصفحات)
     let html = '';
     arr.forEach((name, i) => {
       html += '<option value="' + (i + 1) + '">' + name + ' ' + (i + 1) + '</option>';
@@ -415,15 +366,12 @@
   }
 
   function populateMonthSelects() {
-    // شهور التحويل حسب "نوع التقويم" الافتراضي (هجري)
     refreshConvertMonths();
-    // شهور حساب العمر والفارق وإضافة الأيام (تُضبط حسب نوع التقويم)
     refreshAgeMonths();
     refreshAddMonths();
     refreshDiffMonths();
   }
 
-  // يعبّئ قائمتي شهور "الفرق بين تاريخين" حسب نوع التقويم المختار
   function getDiffCalendar() {
     const el = $('diffCalendar');
     if (!el) return 'gregorian';
@@ -438,113 +386,98 @@
     populateMonths($('diffMonth2'), months);
   }
 
-  let hijriMonthItems = null;
-  let gregorianMonthItems = null;
-
+  /* إصلاح الخلل: إنشاء زِر حقيقي كـ button لضمان تفاعل صحيح مع متصفحات الجوال */
   function renderMonthsLists() {
-    const hijriList = $('hijriMonthsList');
-    HIJRI_MONTHS.forEach((name, i) => {
-      const li = document.createElement('li');
-      li.dataset.month = String(i + 1);
-      li.innerHTML =
-        '<span class="m-badge"></span>' +
-        '<span class="m-head">' +
-          '<span class="m-name">' + name + '</span>' +
-          '<span class="m-num">' + (i + 1) + '</span>' +
-        '</span>' +
-        '<span class="m-days">' + t('monthDays2930') + '</span>';
-      hijriList.appendChild(li);
-    });
-    hijriMonthItems = [...hijriList.children];
+    const grid = $('compactMonthsGrid');
+    if (!grid) return;
+    grid.innerHTML = '';
 
-    const gregList = $('gregorianMonthsList');
+    const isHijri = activeMonthsCal === 'hijri';
+    const months = isHijri ? HIJRI_MONTHS : GREGORIAN_MONTHS;
     const gregDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-    GREGORIAN_MONTHS.forEach((name, i) => {
-      const li = document.createElement('li');
-      li.dataset.month = String(i + 1);
-      const d = gregDays[i];
-      const label = d === 28 ? t('monthDays2829') : d + ' ' + t('monthDaysUnit');
-      li.innerHTML =
-        '<span class="m-badge"></span>' +
-        '<span class="m-head">' +
-          '<span class="m-name">' + name + '</span>' +
-          '<span class="m-num">' + (i + 1) + '</span>' +
-        '</span>' +
-        '<span class="m-days">' + label + '</span>';
-      gregList.appendChild(li);
+
+    months.forEach((name, i) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'mini-month-btn';
+      btn.dataset.month = String(i + 1);
+
+      const daysText = isHijri 
+        ? t('monthDays2930') 
+        : (gregDays[i] === 28 ? t('monthDays2829') : gregDays[i] + ' ' + t('monthDaysUnit'));
+
+      btn.innerHTML = `
+        <span class="m-mini-num">${i + 1}</span>
+        <span class="m-mini-name">${name}</span>
+      `;
+      btn.title = `${name} (${daysText})`;
+
+      grid.appendChild(btn);
     });
-    gregorianMonthItems = [...gregList.children];
 
     updateCurrentMonths();
   }
 
-  // يميِّز الشهر الحالي فقط في كلتا القائمتين (دون عرض رقم اليوم)
   function updateCurrentMonths() {
-    if (!hijriMonthItems || !gregorianMonthItems) return;
     const now = new Date();
     const gMonth = now.getMonth() + 1;
-
     const hijri = gregorianToHijri(now.getFullYear(), gMonth, now.getDate());
     const hMonth = hijri ? hijri.month : null;
 
-    hijriMonthItems.forEach((li) => {
-      const isCur = hMonth !== null && li.dataset.month === String(hMonth);
-      li.classList.toggle('is-current', isCur);
-    });
+    const isHijri = activeMonthsCal === 'hijri';
+    const curMonthNum = isHijri ? hMonth : gMonth;
+    const monthsArr = isHijri ? HIJRI_MONTHS : GREGORIAN_MONTHS;
 
-    gregorianMonthItems.forEach((li) => {
-      const isCur = li.dataset.month === String(gMonth);
-      li.classList.toggle('is-current', isCur);
+    if (curMonthNum && $('curMonthName')) {
+      $('curMonthName').textContent = `${curMonthNum}. ${monthsArr[curMonthNum - 1]}`;
+      $('curMonthMeta').textContent = isHijri ? t('monthDays2930') : 'شهر مكتمل';
+    }
+
+    const buttons = document.querySelectorAll('.mini-month-btn');
+    buttons.forEach((btn) => {
+      const isCur = String(curMonthNum) === btn.dataset.month;
+      btn.classList.toggle('is-current', isCur);
     });
   }
 
-  // صيغة تاريخ رقمية موحّدة: 12-12-2022 - ديسمبر
+  const monthsToggleEl = $('monthsCalendarToggle');
+  if (monthsToggleEl) {
+    monthsToggleEl.querySelectorAll('.seg-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        monthsToggleEl.querySelectorAll('.seg-btn').forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeMonthsCal = btn.dataset.cal;
+        renderMonthsLists();
+      });
+    });
+  }
+
   function fmtNumDate(obj, monthsArr) {
     const p2 = (n) => String(n).padStart(2, '0');
     return p2(obj.day) + '-' + p2(obj.month) + '-' + obj.year + ' - ' + monthsArr[obj.month - 1];
   }
 
-  // صيغة رقمية فقط (بلا اسم الشهر): 12-12-2022
   function fmtNumOnly(obj) {
     const p2 = (n) => String(n).padStart(2, '0');
     return p2(obj.day) + '-' + p2(obj.month) + '-' + obj.year;
   }
-
-  /* ==========================================================
-     قسم 1: التاريخ الحالي
-     ========================================================== */
 
   function renderToday() {
     const now = new Date();
     const gYear = now.getFullYear();
     const gMonth = now.getMonth() + 1;
     const gDay = now.getDate();
-    const weekday = WEEKDAYS[now.getDay()];
 
     const hijri = gregorianToHijri(gYear, gMonth, gDay);
 
-    // شريط التاريخ الحالي (مدمج في الترويسة): 12-12-2022 - ديسمبر
     $('stripGregorian').textContent = fmtNumDate({ day: gDay, month: gMonth, year: gYear }, GREGORIAN_MONTHS);
     if (hijri) {
       $('stripHijri').textContent = fmtNumDate(hijri, HIJRI_MONTHS);
     }
 
-    // شريط "تاريخ اليوم" في قسم الأشهر
-    $('monthsWeekday').textContent = weekday + ' ' + gDay + ' ' + GREGORIAN_MONTHS[gMonth - 1] + ' ' + gYear;
-    $('monthsGregDate').textContent = fmtNumDate({ day: gDay, month: gMonth, year: gYear }, GREGORIAN_MONTHS);
-    if (hijri) {
-      $('monthsHijriDate').textContent = fmtNumDate(hijri, HIJRI_MONTHS);
-    }
-
-    // تحديث تمييز الشهر الحالي في قوائم الأشهر
     updateCurrentMonths();
   }
 
-  /* ==========================================================
-     قسم 2: تحويل التاريخ
-     ========================================================== */
-
-  /* --- التبويبات الرئيسية: تحويل / أيام / عمر / فرق --- */
   const mainTabs = document.querySelectorAll('.main-tabs .tab');
   const MAIN_PANELS = { convert: 'tab-convert', adddays: 'tab-adddays', age: 'tab-age', diff: 'tab-diff' };
 
@@ -564,8 +497,6 @@
     tab.addEventListener('click', () => switchMain(tab.dataset.main));
   });
 
-  // يملأ لوحة تاريخ منفصلة: خلايا الأرقام (يوم/شهر/سنة) + اسم الشهر
-  // عرض مختصر: "DD-MM-YYYY هـ/م" + اسم الشهر أسفله
   function fillDatePanel(valueElId, nameElId, dateObj, monthNames, unit) {
     const pad2 = (n) => String(n).padStart(2, '0');
     $(valueElId).innerHTML =
@@ -574,7 +505,6 @@
     $(nameElId).textContent = monthNames[dateObj.month - 1] + ' ' + dateObj.month;
   }
 
-  /* --- تحويل التاريخ (نوع التقويم بزرّين) --- */
   function getConvertCalendar() {
     const el = $('h2gFrom');
     if (!el) return 'hijri';
@@ -588,7 +518,6 @@
     populateMonths($('h2gMonth'), months);
   }
 
-  // ربط أزرار نوع التقويم في التحويل: عند التبديل يُحوّل التاريخ المُدخَل للتقويم الآخر
   const h2gFromEl = $('h2gFrom');
   if (h2gFromEl) {
     h2gFromEl.querySelectorAll('.seg-btn').forEach((btn) => {
@@ -601,24 +530,20 @@
           b.classList.toggle('active', b === btn);
         });
 
-        // قراءة المُدخل من التقويم القديم
         const d = parseInt($('h2gDay').value, 10) || 1;
         const m = parseInt($('h2gMonth').value, 10) || 1;
         const y = parseInt($('h2gYear').value, 10);
 
-        // إعادة بناء قائمة الشهور للتقويم الجديد
         refreshConvertMonths();
 
         if (isFinite(y)) {
           let nD = d, nM = m, nY = y;
           if (prev === 'hijri') {
-            // من هجري إلى ميلادي (forzar تحقق هجري)
             if (isUqDateValid(y, m, d)) {
               const g = hijriToGregorian(y, m, d);
               if (g) { nD = g.day; nM = g.month; nY = g.year; }
             }
           } else {
-            // من ميلادي إلى هجري
             const h = gregorianToHijri(y, m, d);
             if (h) { nD = h.day; nM = h.month; nY = h.year; }
           }
@@ -635,8 +560,8 @@
     const d = parseInt($('h2gDay').value, 10);
     const m = parseInt($('h2gMonth').value, 10);
     const y = parseInt($('h2gYear').value, 10);
-    const from = getConvertCalendar(); // 'hijri' | 'gregorian'
-    const to = from === 'hijri' ? 'gregorian' : 'hijri'; // الوجهة عكس المُدخل
+    const from = getConvertCalendar();
+    const to = from === 'hijri' ? 'gregorian' : 'hijri';
 
     let inputG = null;
     if (from === 'hijri') {
@@ -675,10 +600,6 @@
     $('h2gResult').hidden = false;
   });
 
-  /* ==========================================================
-     حساب الفارق بين تاريخين (بالوحدات)
-     ========================================================== */
-
   function diffInUnits(fromJDN, toJDN) {
     const from = jdnToGregorian(fromJDN);
     const to = jdnToGregorian(toJDN);
@@ -703,11 +624,6 @@
     return { years, months, days, totalDays, weeks };
   }
 
-  /* ==========================================================
-     قسم 4: حساب العمر
-     ========================================================== */
-
-  // قراءة نوع التقويم المختار في "حساب العمر" (من الزر النشط)
   function getAgeCalendar() {
     const el = $('ageCalendar');
     if (!el) return 'gregorian';
@@ -715,45 +631,35 @@
     return active ? active.dataset.cal : 'gregorian';
   }
 
-  // إعادة بناء قائمة شهور حساب العمر حسب التقويم المختار
   function refreshAgeMonths() {
     const isHijri = getAgeCalendar() === 'hijri';
     populateMonths($('ageMonth'), isHijri ? HIJRI_MONTHS : GREGORIAN_MONTHS);
   }
 
-  // ربط أزرار نوع التقويم (ميلادي/هجري) في حساب العمر
-  // عند الضغط: يحوّل التاريخ المُدخَل من التقويم الحالي إلى التقويم المختار
   const ageCalEl = $('ageCalendar');
   if (ageCalEl) {
     ageCalEl.querySelectorAll('.seg-btn').forEach((btn) => {
       btn.addEventListener('click', () => {
         const prev = getAgeCalendar();
         const next = btn.dataset.cal;
-        if (prev === next) {
-          // نفس التقويم، لا حاجة للتحويل
-          return;
-        }
+        if (prev === next) return;
 
         ageCalEl.querySelectorAll('.seg-btn').forEach((b) => {
           b.classList.toggle('active', b === btn);
         });
 
-        // القراءة من التقويم القديم
         const d = parseInt($('ageDay').value, 10) || 1;
         const m = parseInt($('ageMonth').value, 10) || 1;
         const y = parseInt($('ageYear').value, 10);
 
-        // إعادة بناء قائمة الشهور حسب التقويم الجديد أولاً
         refreshAgeMonths();
 
         if (isFinite(y)) {
           let newDay = d, newMonth = m, newYear = y;
           if (prev === 'gregorian') {
-            // من ميلادي إلى هجري
             const h = gregorianToHijri(y, m, d);
             if (h) { newDay = h.day; newMonth = h.month; newYear = h.year; }
           } else {
-            // من هجري إلى ميلادي
             if (isUqDateValid(y, m, d)) {
               const g = hijriToGregorian(y, m, d);
               if (g) { newDay = g.day; newMonth = g.month; newYear = g.year; }
@@ -804,11 +710,6 @@
     $('ageResult').hidden = false;
   });
 
-  /* ==========================================================
-     قسم 5: الفرق بين تاريخين
-     ========================================================== */
-
-  // تحويل تاريخ إلى JDN حسب نوع التقويم، مع التحقق من صحته
   function dateToJDN(cal, d, m, y) {
     if (cal === 'hijri') {
       if (!isUqDateValid(y, m, d)) {
@@ -852,7 +753,6 @@
     $('diffResult').hidden = false;
   });
 
-  // عند اختيار نوع التقويم في "الفرق بين تاريخين"، حدّث قوائم الشهور
   const diffCalendarEl = $('diffCalendar');
   if (diffCalendarEl) {
     diffCalendarEl.querySelectorAll('.seg-btn').forEach((btn) => {
@@ -864,10 +764,6 @@
       });
     });
   }
-
-  /* ==========================================================
-     إضافة/خصم أيام من تاريخ
-     ========================================================== */
 
   function getAddCalendar() {
     const el = $('addCalendar');
@@ -881,7 +777,6 @@
     populateMonths($('addMonth'), isHijri ? HIJRI_MONTHS : GREGORIAN_MONTHS);
   }
 
-  // أزرار نوع التقويم في "إضافة أيام": عند التبديل يحوّل التاريخ المُدخَل للتقويم الآخر
   const addCalendarEl = $('addCalendar');
   if (addCalendarEl) {
     addCalendarEl.querySelectorAll('.seg-btn').forEach((btn) => {
@@ -925,10 +820,9 @@
     const m = parseInt($('addMonth').value, 10);
     const y = parseInt($('addYear').value, 10);
     const cal = getAddCalendar();
-    const op = $('addOp').value;           // 'add' | 'sub'
+    const op = $('addOp').value;
     let days = parseInt($('addCount').value, 10) || 0;
 
-    // تحويل التاريخ الأساسي إلى JDN
     let baseJDN;
     if (cal === 'hijri') {
       if (!isUqDateValid(y, m, d)) {
@@ -947,7 +841,6 @@
 
     const resultJDN = op === 'add' ? baseJDN + days : baseJDN - days;
 
-    // النتيجة في نفس التقويم المُدخل
     let resultG = jdnToGregorian(resultJDN);
     let baseG = jdnToGregorian(baseJDN);
 
@@ -978,12 +871,6 @@
 
   function padDay(n) { return String(n).padStart(2, '0'); }
 
-  /* ==========================================================
-     مواعيد نزول الرواتب + العداد التنازلي
-     ========================================================== */
-
-  // قائمة الجهات وأيام الصرف (رقم اليوم الميلادي)
-  // الاسم مفتاح ترجمة (t('name')) ليُعرض حسب اللغة
   const SALARY_ITEMS = [
     { name: 'sSalaryCivil', day: 27, color: 'civil' },
     { name: 'sSalarySocial', day: 1, color: 'social' },
@@ -1003,11 +890,10 @@
     return target;
   }
 
-  // يعرض مواعيد الرواتب كجدول (الجهة / اليوم / تاريخ الصرف / متبقي)
   function renderSalaryCards() {
     const tbody = $('salaryGrid');
     if (!tbody) return;
-    tbody.innerHTML = ''; // إعادة بناء نظيفة (دون تراكم صفوف/مؤقّتات)
+    tbody.innerHTML = '';
 
     SALARY_ITEMS.forEach((item) => {
       const target = nextPaymentDate(item.day);
@@ -1032,11 +918,9 @@
       }, 1000);
     });
 
-    // بعد البناء طبق التبويب الحالي
     applySalaryMode();
   }
 
-  // قراءة التبويب النشط (هجري/ميلادي)
   function getSalaryCalendar() {
     const el = $('salaryCalendar');
     if (!el) return 'hijri';
@@ -1044,7 +928,6 @@
     return active ? active.dataset.cal : 'hijri';
   }
 
-  // يطبّق التبويب على أعمدة تاريخ الصرف في الجدول
   function applySalaryMode() {
     const mode = getSalaryCalendar();
     document.querySelectorAll('.xl-date-val').forEach((el) => {
@@ -1052,7 +935,6 @@
     });
   }
 
-  // ربط أزرار تبويب التقويم في مواعيد الرواتب
   const salaryCalEl = $('salaryCalendar');
   if (salaryCalEl) {
     salaryCalEl.querySelectorAll('.seg-btn').forEach((btn) => {
@@ -1065,7 +947,6 @@
     });
   }
 
-  // نص عدّاد مختصر: "X يوم Y ساعة Z دقيقة"
   function countdownText(target) {
     const now = new Date();
     let diff = target.getTime() - now.getTime();
@@ -1076,10 +957,6 @@
     return fmt('countdown', { d: d, h: hrs, m: mins });
   }
 
-  /* ==========================================================
-     وضع ليلي/نهاري
-     ========================================================== */
-
   const themeToggle = $('themeToggle');
   const themeIcon = themeToggle.querySelector('.theme-icon');
   const themeLabel = themeToggle.querySelector('.theme-label');
@@ -1089,12 +966,12 @@
     const isDark = theme === 'dark';
     themeIcon.textContent = isDark ? '☀️' : '🌙';
     themeLabel.textContent = isDark ? t('dayMode') : t('nightMode');
-    try { localStorage.setItem('calendar-theme', theme); } catch (err) { /* تجاهل */ }
+    try { localStorage.setItem('calendar-theme', theme); } catch (err) {}
   }
 
   function initTheme() {
     let saved = null;
-    try { saved = localStorage.getItem('calendar-theme'); } catch (err) { /* تجاهل */ }
+    try { saved = localStorage.getItem('calendar-theme'); } catch (err) {}
     if (saved === 'dark' || saved === 'light') {
       applyTheme(saved);
     } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -1109,15 +986,10 @@
     applyTheme(current === 'dark' ? 'light' : 'dark');
   });
 
-  /* ==========================================================
-     التبديل بين اللغتين (عربي / English)
-     ========================================================== */
-
-  // ترجمة كل عناصر الواجهة ذات data-i18n + العنوان والوصف + زر اللغة
   function applyI18n() {
     document.querySelectorAll('[data-i18n]').forEach((el) => {
       const k = el.dataset.i18n;
-      if (k === 'nightMode') return; // تُضبط ديناميكياً عبر applyTheme()
+      if (k === 'nightMode') return;
       el.textContent = t(k);
     });
 
@@ -1136,9 +1008,7 @@
     if (md) md.setAttribute('content', t('metaDesc'));
   }
 
-  // إعادة بناء المحتوى الديناميكي ليعكس اللغة الحالية
   function renderLocalized() {
-    // حفظ اختيارات المستخدم في قوائم الشهور ثم إعادة تعبئتها بالجديدة
     const selects = ['h2gMonth', 'ageMonth', 'addMonth', 'diffMonth1', 'diffMonth2']
       .map((id) => $(id))
       .filter(Boolean)
@@ -1152,12 +1022,11 @@
     applySalaryMode();
   }
 
-  // ضبط اللغة وتطبيق كل ما يلزم (اتجاه، نص، بيانات)
   function setLang(lang) {
     curLang = (lang === 'en') ? 'en' : 'ar';
     document.documentElement.setAttribute('lang', curLang);
     document.documentElement.setAttribute('dir', curLang === 'ar' ? 'rtl' : 'ltr');
-    try { localStorage.setItem(LANG_STORAGE, curLang); } catch (err) { /* تجاهل */ }
+    try { localStorage.setItem(LANG_STORAGE, curLang); } catch (err) {}
 
     applyLanguageData();
     applyTheme(document.documentElement.getAttribute('data-theme') || 'light');
@@ -1165,16 +1034,14 @@
     renderLocalized();
   }
 
-  // ربط زر تبديل اللغة
   const langToggleEl = $('langToggle');
   if (langToggleEl) {
     langToggleEl.addEventListener('click', () => setLang(curLang === 'ar' ? 'en' : 'ar'));
   }
 
-  // تهيئة اللغة عند الفتح (من التخزين المحلي أو الافتراضي: العربية)
   function initLang() {
     let saved = null;
-    try { saved = localStorage.getItem(LANG_STORAGE); } catch (err) { /* تجاهل */ }
+    try { saved = localStorage.getItem(LANG_STORAGE); } catch (err) {}
     curLang = saved === 'en' ? 'en' : 'ar';
     document.documentElement.setAttribute('lang', curLang);
     document.documentElement.setAttribute('dir', curLang === 'ar' ? 'rtl' : 'ltr');
@@ -1182,11 +1049,6 @@
     applyI18n();
   }
 
-  /* ==========================================================
-     التشغيل
-     ========================================================== */
-
-  // يملأ كل حقول التواريخ بتاريخ اليوم (حسب التقويم المختار لكل نموذج)
   function fillTodayDefaults() {
     const now = new Date();
     const g = { year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate() };
@@ -1198,16 +1060,9 @@
       $(yearEl).value = date.year;
     }
 
-    // التحويل: حسب «نوع التقويم» الافتراضي (هجري)
     setDay('h2gDay', 'h2gMonth', 'h2gYear', getConvertCalendar() === 'hijri' && h ? h : g);
-
-    // إضافة/خصم أيام: حسب نوع التقويم الافتراضي (هجري)
     setDay('addDay', 'addMonth', 'addYear', getAddCalendar() === 'hijri' && h ? h : g);
-
-    // حساب العمر: اليوم (بالهجري افتراضياً، يمكن تغييره)
     setDay('ageDay', 'ageMonth', 'ageYear', getAgeCalendar() === 'hijri' && h ? h : g);
-
-    // الفرق بين تاريخين: كلا التاريخين = اليوم (بالهجري افتراضياً)
     setDay('diffDay1', 'diffMonth1', 'diffYear1', getDiffCalendar() === 'hijri' && h ? h : g);
     setDay('diffDay2', 'diffMonth2', 'diffYear2', getDiffCalendar() === 'hijri' && h ? h : g);
   }
