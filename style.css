@@ -1,6 +1,6 @@
 /* ============================================================
    التقويم الاحترافي — style.css
-   تصميم متجاوب، RTL، وضع ليلي/نهاري
+   تصميم متجاوب، RTL، وضع ليلي/نهاري + تحسينات الشاشات الصغيرة والجوال
    ============================================================ */
 
 :root {
@@ -48,6 +48,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
 [hidden] {
@@ -155,6 +156,7 @@ body {
   border-radius: 999px;
   cursor: pointer;
   transition: all var(--transition);
+  touch-action: manipulation;
 }
 
 .theme-toggle:hover, .lang-toggle:hover {
@@ -197,12 +199,6 @@ main.container {
 
 .top-sections .section {
   margin-bottom: 0;
-}
-
-@media (max-width: 900px) {
-  .top-sections {
-    grid-template-columns: 1fr;
-  }
 }
 
 .section {
@@ -276,15 +272,6 @@ main.container {
   font-size: 12px;
 }
 
-@media (max-width: 560px) {
-  .today-strip {
-    font-size: 12px;
-    gap: 6px;
-    padding: 6px 14px;
-    border-radius: 12px;
-  }
-}
-
 .tabs {
   display: flex;
   gap: 8px;
@@ -306,6 +293,7 @@ main.container {
   border-radius: 999px;
   cursor: pointer;
   transition: all var(--transition);
+  touch-action: manipulation;
 }
 
 .tab.active {
@@ -369,6 +357,7 @@ main.container {
   min-height: 44px;
   -webkit-appearance: none;
   appearance: none;
+  touch-action: manipulation;
 }
 
 .field input:focus, .field select:focus {
@@ -426,7 +415,7 @@ main.container {
   border-radius: 999px;
   cursor: pointer;
   transition: all var(--transition);
-  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 .seg-btn.active {
@@ -450,7 +439,7 @@ main.container {
   cursor: pointer;
   text-decoration: none;
   transition: all var(--transition);
-  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 .btn-primary {
@@ -555,19 +544,6 @@ main.container {
   padding: 6px;
 }
 
-@media (max-width: 600px) {
-  .result-dates {
-    grid-template-columns: 1fr;
-  }
-  .panel-arrow {
-    transform: rotate(90deg);
-    padding: 2px 0;
-  }
-  .date-value {
-    font-size: 17px;
-  }
-}
-
 .age-result, .diff-result {
   flex-direction: column;
   align-items: stretch;
@@ -650,6 +626,7 @@ main.container {
   border: 1px solid var(--card-border);
   border-radius: var(--radius-sm);
   background: var(--card);
+  -webkit-overflow-scrolling: touch;
 }
 
 .excel-table {
@@ -718,7 +695,7 @@ main.container {
 }
 
 /* ============================================================
-   قسم الأشهر المصغر (ملموم ومحدد العرض)
+   قسم الأشهر المصغر
    ============================================================ */
 
 .months-compact-wrapper {
@@ -791,7 +768,6 @@ html[dir="ltr"] .banner-info {
   }
 }
 
-/* إصلاح الخلل: تحسين مؤشر التفاعل لتسهيل الاستخدام */
 .mini-month-btn {
   display: flex;
   flex-direction: column;
@@ -888,12 +864,25 @@ html[dir="ltr"] .banner-info {
   color: #fff;
 }
 
-@media (max-width: 600px) {
-  .section-title {
-    font-size: 20px;
+/* ============================================================
+   تحسينات الشاشات المتوسطة والجوال (Responsive)
+   ============================================================ */
+
+@media (max-width: 900px) {
+  .top-sections {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 680px) {
+  .container {
+    padding: 0 14px;
   }
   .card {
-    padding: 18px;
+    padding: 18px 14px;
+  }
+  .section-title {
+    font-size: 20px;
   }
   .header-inner {
     padding-top: 10px;
@@ -907,57 +896,102 @@ html[dir="ltr"] .banner-info {
     display: none;
   }
   .theme-toggle, .lang-toggle {
-    padding: 9px 12px;
+    padding: 8px 12px;
   }
   .header-inner .today-strip {
     order: 3;
     width: 100%;
     justify-content: center;
-    margin-top: 10px;
+    margin-top: 8px;
+    font-size: 12.5px;
+    padding: 6px 12px;
   }
-  .salary-box .excel-wrap {
-    max-width: 100%;
-  }
-  .excel-table th, .excel-table td {
-    padding: 8px 10px;
-  }
-}
 
-* { -webkit-tap-highlight-color: transparent; }
-
-@media (max-width: 520px) {
+  /* تحسين أدوات التواريخ للجوال */
   .main-tabs {
     flex-wrap: wrap;
+    gap: 6px;
+    padding: 4px;
   }
   .main-tabs .tab {
-    flex: 1 1 calc(50% - 8px);
-    padding: 12px 8px;
-    font-size: 15px;
-    min-height: 46px;
+    flex: 1 1 calc(50% - 6px);
+    padding: 10px 6px;
+    font-size: 14px;
+    text-align: center;
+    min-height: 44px;
   }
-}
 
-@media (max-width: 360px) {
   .fields-row {
+    flex-direction: column;
     gap: 12px;
   }
+
   .field {
     flex: 1 1 100%;
+    width: 100%;
     min-width: 100%;
   }
-}
 
-.field input, .seg-btn, .tab, .btn, .theme-toggle {
-  touch-action: manipulation;
-}
-
-@media (max-width: 600px) {
   .convert-form .btn-primary, .btn-primary {
     width: 100%;
     align-self: stretch;
   }
+
   .diff-pair {
     grid-template-columns: 1fr;
+  }
+
+  .diff-cal-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .diff-cal-row .seg {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .result-dates {
+    grid-template-columns: 1fr;
+  }
+
+  .panel-arrow {
+    transform: rotate(90deg);
+    padding: 2px 0;
+  }
+
+  .date-value {
+    font-size: 18px;
+  }
+
+  /* تحسين جدول الرواتب للجوال */
+  .salary-box {
+    padding: 16px 12px;
+  }
+
+  .excel-wrap {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: var(--radius-sm);
+  }
+
+  .excel-table {
+    min-width: 480px;
+  }
+
+  .excel-table th, .excel-table td {
+    padding: 9px 8px;
+    font-size: 12.5px;
+  }
+}
+
+@media (max-width: 400px) {
+  .main-tabs .tab {
+    flex: 1 1 100%;
+  }
+  .age-block {
+    flex: 1 1 100%;
   }
 }
 
