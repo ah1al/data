@@ -1,23 +1,21 @@
-# 📅 التقويم الاحترافي | Professional Calendar
-
-صفحة ويب متجاوبة لإدارة التواريخ والتقويم تعرض التاريخين الهجري والميلادي وتحولهما وفق تقويم أم القرى مع حساب العمر والفرق بين تاريخين والمواعيد العامة للرواتب
+# 📅 Professional Calendar
 
 An advanced web application for calendar management powered by the Umm Al Qura algorithm for Hijri Gregorian transformations salary countdowns and date arithmetic
 
 ---
 
-## ✨ المميزات | Features
+## ✨ Features
 
-* **التاريخ الحالي** عرض حي للتاريخ الهجري والميلادي
-* **دقة أم القرى** التحويل من الجدول الرسمي لأطوال الأشهر 1356هـ حتى 1500هـ المطابق لـ UmAlQuraCalendar
-* **أدوات التواريخ** تحويل تاريخ وحساب عمر وإضافة أيام وحساب فترة
-* **مواعيد الرواتب** مواعيد نزول الرواتب مع عداد متبق حي
-* **أشهر السنة** عرض الأشهر مع تمييز الشهر الحالي
-* **الواجهة والوضع** دعم العربية RTL والإنجليزية LTR ووضع ليلي ونهاري
+* **Current Date** Live display for Hijri and Gregorian dates
+* **Umm Al Qura Accuracy** Precise conversion using the official month length table from 1356 AH to 1500 AH matching UmAlQuraCalendar
+* **Date Tools** Date conversion age calculator adding or subtracting days and period calculation
+* **Salary Tracker** Salary payment dates with a live remaining countdown
+* **Months of the Year** Full months display with highlighting for the current month
+* **UI and Modes** Full support for Arabic RTL English LTR and dark light modes
 
 ---
 
-## 🛠️ البناء والتطوير | Tech Stack
+## 🛠️ Tech Stack
 
 * **Frontend** HTML5 CSS3 CSS Variables Flexbox Grid
 * **Logic and Engine** Native JavaScript ES6 Pure Client Side
@@ -26,9 +24,9 @@ An advanced web application for calendar management powered by the Umm Al Qura a
 
 ---
 
-## 🚀 التشغيل | Quick Start
+## 🚀 Quick Start
 
-لا يحتاج بناء افتح index html مباشرة أو عبر الأوامر التالية
+No build tools required Run index html directly or use local server commands
 
 ```bash
 # Python
